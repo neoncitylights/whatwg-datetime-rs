@@ -389,9 +389,10 @@ pub fn parse_global_datetime(s: &str) -> Option<DateTime<Utc>> {
 	Some(DateTime::<Utc>::from_utc(naive_datetime, Utc))
 }
 
-
 pub(crate) fn is_some_and<T, P>(option: Option<T>, predicate: P) -> bool
-where P: FnOnce(&T) -> bool {
+where
+	P: FnOnce(&T) -> bool,
+{
 	match option {
 		Some(value) => predicate(&value),
 		None => false,
