@@ -1,5 +1,5 @@
 [package]
-name = "rust-template"
+name = "whatwg-datetime"
 version = "0.1.0"
 authors = [
 	"First Name Last Name, <yourname@gmail.com>",
@@ -15,11 +15,19 @@ exclude = [
 	".devcontainer",
 	".github",
 	".vscode",
+	".idea",
 	"deny.toml",
 	".commitlintrc.json",
 	"package.json",
 	"package-lock.json",
+	"fuzz",
+	"book",
+	"benches",
 ]
+
+[dependencies]
+chrono = "0.4.24"
+whatwg-infra = "0.2.0"
 
 [dev-dependencies]
 criterion = { version = "0.4.0", features = ["html_reports"] }
