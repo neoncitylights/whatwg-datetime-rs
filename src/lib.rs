@@ -389,6 +389,15 @@ pub fn parse_global_datetime(s: &str) -> Option<DateTime<Utc>> {
 	Some(DateTime::<Utc>::from_utc(naive_datetime, Utc))
 }
 
+
+pub(crate) fn is_some_and<T, P>(option: Option<T>, predicate: P) -> bool
+where P: FnOnce(&T) -> bool {
+	match option {
+		Some(value) => predicate(&value),
+		None => false,
+	}
+}
+
 #[allow(unused_assignments)]
 pub fn parse_duration(input: &str) -> Option<Duration> {
 	let mut position = 0usize;
@@ -428,7 +437,7 @@ pub fn parse_duration(input: &str) -> Option<Duration> {
 
 		if next_char == Some('.') {
 			n = 0u32;
-		} else if next_char.is_some_and(|c| c.is_ascii_digit()) {
+		} else if is_some_and(next_char, |c| c.is_ascii_digit()) {
 			n = collect_ascii_digits(input, &mut position)
 				.parse::<u32>()
 				.unwrap();
@@ -461,7 +470,7 @@ pub fn parse_duration(input: &str) -> Option<Duration> {
 				return None;
 			}
 		} else {
-			if next_char.is_some_and(|c| c.is_ascii_whitespace()) {
+			if is_some_and(next_char, |c| c.is_ascii_whitespace()) {
 				let _ = skip_ascii_whitespace(input, &mut position);
 				next_char = input.chars().nth(position);
 				position += 1;
