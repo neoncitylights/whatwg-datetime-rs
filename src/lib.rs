@@ -386,10 +386,7 @@ pub fn parse_global_datetime(s: &str) -> Option<DateTime<Utc>> {
 		time.overflowing_sub_signed(timezone_offset_as_duration).0,
 	);
 
-	Some(DateTime::<Utc>::from_utc(
-		naive_datetime,
-		Utc,
-	))
+	Some(DateTime::<Utc>::from_utc(naive_datetime, Utc))
 }
 
 #[allow(unused_assignments)]
@@ -432,7 +429,9 @@ pub fn parse_duration(input: &str) -> Option<Duration> {
 		if next_char == Some('.') {
 			n = 0u32;
 		} else if next_char.is_some_and(|c| c.is_ascii_digit()) {
-			n = collect_ascii_digits(input, &mut position).parse::<u32>().unwrap();
+			n = collect_ascii_digits(input, &mut position)
+				.parse::<u32>()
+				.unwrap();
 		} else {
 			return None;
 		}
@@ -472,30 +471,30 @@ pub fn parse_duration(input: &str) -> Option<Duration> {
 				Some('Y') | Some('y') => {
 					unit = Some(DurationUnit::Year);
 					m_disambig = MDisambig::Month;
-				},
+				}
 				Some('M') | Some('m') => {
 					if m_disambig == MDisambig::Month {
 						unit = Some(DurationUnit::Minute);
 					} else {
 						unit = Some(DurationUnit::Month);
 					}
-				},
+				}
 				Some('W') | Some('w') => {
 					unit = Some(DurationUnit::Week);
 					m_disambig = MDisambig::Minute;
-				},
+				}
 				Some('D') | Some('d') => {
 					unit = Some(DurationUnit::Day);
 					m_disambig = MDisambig::Minute;
-				},
+				}
 				Some('H') | Some('h') => {
 					unit = Some(DurationUnit::Hour);
 					m_disambig = MDisambig::Minute;
-				},
+				}
 				Some('S') | Some('s') => {
 					unit = Some(DurationUnit::Second);
 					m_disambig = MDisambig::Minute;
-				},
+				}
 				_ => return None,
 			}
 		}
@@ -506,29 +505,29 @@ pub fn parse_duration(input: &str) -> Option<Duration> {
 			Some(DurationUnit::Year) => {
 				multiplier *= 12;
 				unit = Some(DurationUnit::Month);
-			},
+			}
 			Some(DurationUnit::Month) => {
 				months += n * multiplier;
-			},
+			}
 			Some(DurationUnit::Week) => {
 				multiplier *= 7;
 				unit = Some(DurationUnit::Day);
-			},
+			}
 			Some(DurationUnit::Day) => {
 				multiplier *= 24;
 				unit = Some(DurationUnit::Hour);
-			},
+			}
 			Some(DurationUnit::Hour) => {
 				multiplier *= 60;
 				unit = Some(DurationUnit::Minute);
-			},
+			}
 			Some(DurationUnit::Minute) => {
 				multiplier *= 60;
 				unit = Some(DurationUnit::Second);
-			},
+			}
 			Some(DurationUnit::Second) => {
 				seconds *= n + multiplier;
-			},
+			}
 			None => unreachable!(),
 		}
 
@@ -550,7 +549,7 @@ pub fn parse_duration(input: &str) -> Option<Duration> {
 mod tests {
 	use chrono::{DateTime, Utc};
 
-use crate::{parse_week_string, parse_global_datetime};
+	use crate::{parse_global_datetime, parse_week_string};
 	#[rustfmt::skip]
 	use crate::{
 		NaiveDate,
