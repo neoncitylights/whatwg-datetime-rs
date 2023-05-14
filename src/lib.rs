@@ -31,12 +31,6 @@ pub enum DateTimeValue {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct YearWeek {
-	pub(crate) year: i32,
-	pub(crate) week: u8,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) enum MDisambig {
 	Month,
 	Minute,
@@ -71,46 +65,6 @@ pub fn parse_local_datetime(s: &str) -> Option<NaiveDateTime> {
 
 	let date = NaiveDate::from_ymd_opt(year as i32, month as u32, day as u32)?;
 	Some(NaiveDateTime::new(date, time))
-}
-
-pub fn parse_week_string(input: &str) -> Option<YearWeek> {
-	// Step 1, 2
-	let mut position = 0usize;
-
-	// Step 3, 4
-	let year_string = collect_ascii_digits(input, &mut position);
-	let year = year_string.parse::<i32>().unwrap();
-	if year <= 0 {
-		return None;
-	}
-
-	// Step 5
-	if position > input.len() || input.chars().nth(position) != Some(TOKEN_DATETIME_SEPARATOR) {
-		return None;
-	} else {
-		position += 1;
-	}
-
-	// Step 6
-	if position > input.len() || input.chars().nth(position) != Some(TOKEN_ABBR_WEEK) {
-		return None;
-	} else {
-		position += 1;
-	}
-
-	// Step 7
-	let parsed_week = collect_ascii_digits(input, &mut position);
-	if parsed_week.len() != 2 {
-		return None;
-	}
-
-	let week = parsed_week.parse::<u8>().unwrap();
-	let max_weeks = week_number_of_year(year)?;
-	if week < 1 || week > max_weeks {
-		return None;
-	}
-
-	Some(YearWeek { year, week })
 }
 
 pub fn parse_global_datetime(s: &str) -> Option<DateTime<Utc>> {
@@ -315,13 +269,13 @@ pub fn parse_duration(input: &str) -> Option<Duration> {
 #[cfg(test)]
 mod tests {
 	use chrono::{DateTime, Utc};
-	use crate::{parse_global_datetime, parse_week_string};
+	#[rustfmt::skip]
 	use crate::{
 		NaiveDate,
 		NaiveDateTime,
 		NaiveTime,
 		parse_local_datetime,
-		YearWeek,
+		parse_global_datetime,
 	};
 
 	#[test]
@@ -334,17 +288,6 @@ mod tests {
 				NaiveDate::from_ymd_opt(2004, 12, 31).unwrap(),
 				NaiveTime::from_hms_opt(12, 31, 59).unwrap(),
 			))
-		);
-	}
-
-	#[test]
-	fn test_parse_week_string() {
-		assert_eq!(
-			parse_week_string("2004-W53"),
-			Some(YearWeek {
-				year: 2004,
-				week: 53
-			})
 		);
 	}
 
