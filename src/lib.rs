@@ -1,7 +1,10 @@
 #[doc = include_str!("../README.md")]
+mod components;
 mod utils;
 
+pub use crate::components::*;
 use crate::utils::*;
+
 use chrono::{DateTime, Duration, Local, Month, NaiveDate, NaiveDateTime, NaiveTime, Utc};
 use whatwg_infra::collect_codepoints;
 
@@ -61,38 +64,6 @@ pub(crate) enum DurationUnit {
 	Hour,
 	Minute,
 	Second,
-}
-
-pub fn parse_month_string(s: &str) -> Option<(u32, u8)> {
-	let mut position = 0usize;
-	let parsed = parse_month_component(s, &mut position)?;
-	if position < s.len() {
-		return None;
-	}
-
-	Some(parsed)
-}
-
-pub fn parse_month_component(s: &str, position: &mut usize) -> Option<(u32, u8)> {
-	let parsed_year = collect_ascii_digits(s, position);
-	if parsed_year.len() < 4 {
-		return None;
-	}
-
-	let year = parsed_year.parse::<u32>().ok()?;
-	if *position > s.len() || s.chars().nth(*position) != Some(TOKEN_DATETIME_SEPARATOR) {
-		return None;
-	} else {
-		*position += 1;
-	}
-
-	let parsed_month = collect_ascii_digits(s, position);
-	let month = parsed_month.parse::<u8>().ok()?;
-	if !is_valid_month(&month) {
-		return None;
-	}
-
-	Some((year, month))
 }
 
 pub fn parse_date_string(s: &str) -> Option<(u32, u8, u8)> {
@@ -567,7 +538,6 @@ mod tests {
 		NaiveTime,
 		parse_date_component,
 		parse_local_datetime,
-		parse_month_component,
 		parse_time_component,
 		parse_timezone_offset_component,
 		parse_yearless_date_component,
@@ -575,14 +545,6 @@ mod tests {
 		YearlessDate,
 		YearWeek,
 	};
-
-	#[test]
-	fn test_parse_month_component() {
-		let mut position = 0usize;
-		let parsed = parse_month_component("2004-12", &mut position);
-
-		assert_eq!(parsed, Some((2004, 12)));
-	}
 
 	#[test]
 	fn test_parse_date_component() {
