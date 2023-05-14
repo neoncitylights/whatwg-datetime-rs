@@ -1,6 +1,6 @@
+use crate::utils::{collect_ascii_digits, is_valid_hour, is_valid_min_or_sec};
 use chrono::NaiveTime;
 use whatwg_infra::collect_codepoints;
-use crate::utils::{collect_ascii_digits, is_valid_hour, is_valid_min_or_sec};
 
 pub fn parse_time_component(s: &str, position: &mut usize) -> Option<NaiveTime> {
 	let parsed_hour = collect_ascii_digits(s, position);
@@ -53,4 +53,17 @@ pub fn parse_time_component(s: &str, position: &mut usize) -> Option<NaiveTime> 
 	}
 
 	NaiveTime::from_hms_opt(hour as u32, minute as u32, second as u32)
+}
+
+#[cfg(test)]
+mod tests {
+	use super::{parse_time_component, NaiveTime};
+
+	#[test]
+	fn test_parse_time_component() {
+		let mut position = 0usize;
+		let parsed = parse_time_component("12:31:59", &mut position);
+
+		assert_eq!(parsed, NaiveTime::from_hms_opt(12, 31, 59));
+	}
 }

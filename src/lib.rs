@@ -6,7 +6,6 @@ pub use crate::components::*;
 use crate::utils::*;
 
 use chrono::{DateTime, Duration, Local, Month, NaiveDate, NaiveDateTime, NaiveTime, Utc};
-use whatwg_infra::collect_codepoints;
 
 // pub(crate) const TOKEN_ABBR_DAY: char = 'D';
 // pub(crate) const TOKEN_ABBR_HOUR: char = 'H';
@@ -35,12 +34,6 @@ pub enum DateTimeValue {
 pub struct YearWeek {
 	pub(crate) year: i32,
 	pub(crate) week: u8,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct TimeZoneOffset {
-	pub(crate) hours: i8,
-	pub(crate) minutes: i8,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -78,74 +71,6 @@ pub fn parse_local_datetime(s: &str) -> Option<NaiveDateTime> {
 
 	let date = NaiveDate::from_ymd_opt(year as i32, month as u32, day as u32)?;
 	Some(NaiveDateTime::new(date, time))
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum TimeZoneSign {
-	Positive,
-	Negative,
-}
-
-pub fn parse_timezone_offset_component(s: &str, position: &mut usize) -> Option<TimeZoneOffset> {
-	let char_at = s.chars().nth(*position);
-
-	let mut minutes = 0i8;
-	let mut hours = 0i8;
-
-	match char_at {
-		Some('Z') => {
-			*position += 1;
-		}
-		Some('+') | Some('-') => {
-			let sign = match char_at {
-				Some('+') => TimeZoneSign::Positive,
-				Some('-') => TimeZoneSign::Negative,
-				_ => unreachable!(),
-			};
-
-			*position += 1;
-
-			let collected = collect_ascii_digits(s, position);
-			let collected_len = collected.len();
-			if collected_len == 2 {
-				hours = collected.parse::<i8>().unwrap();
-				if *position > s.len() || s.chars().nth(*position) != Some(':') {
-					return None;
-				} else {
-					*position += 1;
-				}
-
-				let parsed_mins = collect_ascii_digits(s, position);
-				if parsed_mins.len() != 2 {
-					return None;
-				}
-
-				minutes = parsed_mins.parse::<i8>().unwrap();
-			} else if collected_len == 4 {
-				let (hour_str, min_str) = collected.split_at(2);
-				hours = hour_str.parse::<i8>().unwrap();
-				minutes = min_str.parse::<i8>().unwrap();
-			} else {
-				return None;
-			}
-
-			if !(0..=23).contains(&hours) {
-				return None;
-			}
-
-			if !(0..=59).contains(&minutes) {
-				return None;
-			}
-
-			if sign == TimeZoneSign::Negative {
-				hours *= -1;
-				minutes *= -1;
-			}
-		}
-		_ => (),
-	}
-
-	Some(TimeZoneOffset { hours, minutes })
 }
 
 pub fn parse_week_string(input: &str) -> Option<YearWeek> {
@@ -390,27 +315,14 @@ pub fn parse_duration(input: &str) -> Option<Duration> {
 #[cfg(test)]
 mod tests {
 	use chrono::{DateTime, Utc};
-
 	use crate::{parse_global_datetime, parse_week_string};
-	#[rustfmt::skip]
 	use crate::{
 		NaiveDate,
 		NaiveDateTime,
 		NaiveTime,
 		parse_local_datetime,
-		parse_time_component,
-		parse_timezone_offset_component,
-		TimeZoneOffset,
 		YearWeek,
 	};
-
-	#[test]
-	fn test_parse_time_component() {
-		let mut position = 0usize;
-		let parsed = parse_time_component("12:31:59", &mut position);
-
-		assert_eq!(parsed, NaiveTime::from_hms_opt(12, 31, 59));
-	}
 
 	#[test]
 	pub fn test_parse_local_datetime() {
@@ -422,108 +334,6 @@ mod tests {
 				NaiveDate::from_ymd_opt(2004, 12, 31).unwrap(),
 				NaiveTime::from_hms_opt(12, 31, 59).unwrap(),
 			))
-		);
-	}
-
-	#[test]
-	pub fn test_parse_timezone_offset_component() {
-		let mut position = 0usize;
-		let parsed = parse_timezone_offset_component("Z", &mut position);
-
-		assert_eq!(
-			parsed,
-			Some(TimeZoneOffset {
-				hours: 0,
-				minutes: 0
-			})
-		);
-
-		let mut position = 0usize;
-		let parsed = parse_timezone_offset_component("+01:00", &mut position);
-
-		assert_eq!(
-			parsed,
-			Some(TimeZoneOffset {
-				hours: 1,
-				minutes: 0
-			})
-		);
-
-		let mut position = 0usize;
-		let parsed = parse_timezone_offset_component("-01:00", &mut position);
-
-		assert_eq!(
-			parsed,
-			Some(TimeZoneOffset {
-				hours: -1,
-				minutes: 0
-			})
-		);
-
-		let mut position = 0usize;
-		let parsed = parse_timezone_offset_component("+0100", &mut position);
-
-		assert_eq!(
-			parsed,
-			Some(TimeZoneOffset {
-				hours: 1,
-				minutes: 0
-			})
-		);
-
-		let mut position = 0usize;
-		let parsed = parse_timezone_offset_component("-0100", &mut position);
-
-		assert_eq!(
-			parsed,
-			Some(TimeZoneOffset {
-				hours: -1,
-				minutes: 0
-			})
-		);
-
-		let mut position = 0usize;
-		let parsed = parse_timezone_offset_component("+0100", &mut position);
-
-		assert_eq!(
-			parsed,
-			Some(TimeZoneOffset {
-				hours: 1,
-				minutes: 0
-			})
-		);
-
-		let mut position = 0usize;
-		let parsed = parse_timezone_offset_component("-0100", &mut position);
-
-		assert_eq!(
-			parsed,
-			Some(TimeZoneOffset {
-				hours: -1,
-				minutes: 0
-			})
-		);
-
-		let mut position = 0usize;
-		let parsed = parse_timezone_offset_component("+0100", &mut position);
-
-		assert_eq!(
-			parsed,
-			Some(TimeZoneOffset {
-				hours: 1,
-				minutes: 0
-			})
-		);
-
-		let mut position = 0usize;
-		let parsed = parse_timezone_offset_component("-0100", &mut position);
-
-		assert_eq!(
-			parsed,
-			Some(TimeZoneOffset {
-				hours: -1,
-				minutes: 0
-			})
 		);
 	}
 
