@@ -2,15 +2,14 @@
 name = "whatwg-datetime"
 version = "0.1.0"
 authors = [
-	"First Name Last Name, <yourname@gmail.com>",
-	"Another Person <anotherperson@outlook.com>"
+	"Samantha Nguyen, <sam.t.nguyenn@gmail.com>",
 ]
-description = "Your description of the Rust library"
+description = "A Rust crate for parsing the datetime microsyntax, as defined by the WHATWG HTML Standard"
 readme = "README.md"
 license = "MIT OR Apache-2.0"
 edition = "2021"
-# keywords = []
-# categories = []
+keywords = ["whatwg", "html", "html-datetime", "datetime"]
+categories = ["parsing", "text-processing"]
 exclude = [
 	".devcontainer",
 	".github",
