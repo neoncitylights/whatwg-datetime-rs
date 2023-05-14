@@ -1,7 +1,7 @@
 use crate::utils::{collect_ascii_digits, is_valid_month};
 use crate::TOKEN_DATETIME_SEPARATOR;
 
-pub fn parse_month_string(s: &str) -> Option<(u32, u8)> {
+pub fn parse_month(s: &str) -> Option<(u32, u8)> {
 	let mut position = 0usize;
 	let parsed = parse_month_component(s, &mut position)?;
 	if position < s.len() {
@@ -39,23 +39,23 @@ pub fn parse_month_component(s: &str, position: &mut usize) -> Option<(u32, u8)>
 
 #[cfg(test)]
 mod tests {
-	use super::{parse_month_component, parse_month_string};
+	use super::{parse_month, parse_month_component};
 
 	#[test]
 	fn test_parse_month_string() {
-		let parsed = parse_month_string("2004-12");
+		let parsed = parse_month("2004-12");
 		assert_eq!(parsed, Some((2004, 12)));
 	}
 
 	#[test]
 	fn test_parse_month_string_fails_invalid_month() {
-		let parsed = parse_month_string("2004-2a");
+		let parsed = parse_month("2004-2a");
 		assert_eq!(parsed, None);
 	}
 
 	#[test]
 	fn test_parse_month_string_fails() {
-		let parsed = parse_month_string("2004-13");
+		let parsed = parse_month("2004-13");
 		assert_eq!(parsed, None);
 	}
 
