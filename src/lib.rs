@@ -488,9 +488,7 @@ mod tests {
 		parse_local_datetime,
 		parse_time_component,
 		parse_timezone_offset_component,
-		parse_yearless_date_component,
 		TimeZoneOffset,
-		YearlessDate,
 		YearWeek,
 	};
 
