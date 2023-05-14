@@ -47,26 +47,6 @@ pub(crate) enum DurationUnit {
 	Second,
 }
 
-pub fn parse_local_datetime(s: &str) -> Option<NaiveDateTime> {
-	let mut position = 0usize;
-	let (year, month, day) = parse_date_component(s, &mut position)?;
-
-	let last_char = s.chars().nth(position);
-	if position > s.len() || !matches!(last_char, Some('T') | Some(' ')) {
-		return None;
-	} else {
-		position += 1;
-	}
-
-	let time = parse_time_component(s, &mut position)?;
-	if position < s.len() {
-		return None;
-	}
-
-	let date = NaiveDate::from_ymd_opt(year as i32, month as u32, day as u32)?;
-	Some(NaiveDateTime::new(date, time))
-}
-
 pub fn parse_global_datetime(s: &str) -> Option<DateTime<Utc>> {
 	let mut position = 0usize;
 	let (year, month, day) = parse_date_component(s, &mut position)?;
@@ -274,22 +254,8 @@ mod tests {
 		NaiveDate,
 		NaiveDateTime,
 		NaiveTime,
-		parse_local_datetime,
 		parse_global_datetime,
 	};
-
-	#[test]
-	pub fn test_parse_local_datetime() {
-		let parsed = parse_local_datetime("2004-12-31T12:31:59");
-
-		assert_eq!(
-			parsed,
-			Some(NaiveDateTime::new(
-				NaiveDate::from_ymd_opt(2004, 12, 31).unwrap(),
-				NaiveTime::from_hms_opt(12, 31, 59).unwrap(),
-			))
-		);
-	}
 
 	#[test]
 	fn test_parse_global_datetime() {
