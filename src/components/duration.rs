@@ -1,5 +1,5 @@
-use chrono::Duration;
 use crate::utils::{collect_ascii_digits, skip_ascii_whitespace};
+use chrono::Duration;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) enum MDisambig {
