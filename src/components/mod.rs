@@ -1,4 +1,5 @@
 mod date;
+mod global_datetime;
 mod local_datetime;
 mod month;
 mod time;
@@ -7,6 +8,7 @@ mod week;
 mod yearless_date;
 
 pub use self::date::*;
+pub use self::global_datetime::*;
 pub use self::local_datetime::*;
 pub use self::month::*;
 pub use self::time::*;
