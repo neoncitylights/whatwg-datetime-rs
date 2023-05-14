@@ -65,6 +65,7 @@ mod tests {
 	use super::{
 		max_days_in_month_year,
 		week_number_of_year,
+		skip_ascii_whitespace,
 	};
 
 	#[test]
@@ -134,5 +135,21 @@ mod tests {
 	fn test_week_number_of_year_starts_on_wednesday_and_not_leap_year_is_52() {
 		assert_eq!(week_number_of_year(2014), Some(52));
 		assert_eq!(week_number_of_year(2025), Some(52));
+	}
+
+	#[test]
+	fn test_skip_ascii_whitespace_empty() {
+		let mut position = 0usize;
+		assert_eq!(skip_ascii_whitespace("", &mut position), String::new());
+	}
+
+	#[test]
+	fn test_skip_ascii_whitespace() {
+		let mut position = 0usize;
+		let s = "   test";
+		let skip = skip_ascii_whitespace(s, &mut position);
+		assert_eq!(skip, "   ");
+		assert_eq!(position, 3);
+		assert_eq!(&s[position..], "test");
 	}
 }
