@@ -9,7 +9,7 @@ pub struct YearlessDate {
 	pub(crate) day: u8,
 }
 
-pub fn parse_yearless_date_string(s: &str) -> Option<YearlessDate> {
+pub fn parse_yearless_date(s: &str) -> Option<YearlessDate> {
 	let mut position = 0usize;
 	let parsed = parse_yearless_date_component(s, &mut position)?;
 	if position < s.len() {

@@ -1,7 +1,7 @@
 use crate::utils::{collect_ascii_digits, max_days_in_month_year};
 use crate::{parse_month_component, TOKEN_DATETIME_SEPARATOR};
 
-pub fn parse_date_string(s: &str) -> Option<(u32, u8, u8)> {
+pub fn parse_date(s: &str) -> Option<(u32, u8, u8)> {
 	let mut position = 0usize;
 	let parsed = parse_date_component(s, &mut position)?;
 	if position < s.len() {
