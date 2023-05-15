@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/badge/License-MIT%20%26%20Apache%202.0-blue)](#license)
 [![CI](https://github.com/nlp-rs/rust-template/actions/workflows/main.yml/badge.svg)](https://github.com/nlp-rs/rust-template/actions/workflows/main.yml)
 [![Security audit](https://github.com/nlp-rs/rust-template/actions/workflows/security-audit.yml/badge.svg)](https://github.com/nlp-rs/rust-template/actions/workflows/security-audit.yml)
-[![codecov](https://codecov.io/gh/nlp-rs/rust-template/branch/main/graph/badge.svg?token=6ZSIWAQTHU)](https://codecov.io/gh/nlp-rs/rust-template)
+[![codecov](https://codecov.io/github/acmuta-research/whatwg-datetime-rs/branch/main/graph/badge.svg?token=p3VPg9QCaE)](https://codecov.io/github/acmuta-research/whatwg-datetime-rs)
 
 A Rust crate for parsing the datetime microsyntax, as defined by the WHATWG HTML Standard 
 
