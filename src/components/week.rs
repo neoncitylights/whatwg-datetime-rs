@@ -54,7 +54,7 @@ mod tests {
 	use super::{parse_week, YearWeek};
 
 	#[test]
-	fn test_parse_week_string() {
+	fn test_parse_week() {
 		assert_eq!(
 			parse_week("2004-W53"),
 			Some(YearWeek {
@@ -62,5 +62,38 @@ mod tests {
 				week: 53
 			})
 		);
+	}
+
+	#[test]
+	fn test_parse_week_fails_year_is_zero() {
+		assert_eq!(parse_week("0000-W01"), None);
+	}
+
+	#[test]
+	fn test_parse_week_fails_invalid_separator() {
+		assert_eq!(parse_week("2004_W01"), None);
+	}
+
+	#[test]
+	fn test_parse_week_fails_invalid_week_abbr() {
+		assert_eq!(parse_week("2003-𝓌01"), None);
+	}
+
+	#[test]
+	fn test_parse_week_fails_invalid_week_length() {
+		assert_eq!(parse_week("2004-W1"), None);
+		assert_eq!(parse_week("2008-W001"), None);
+	}
+
+	#[test]
+	fn test_parse_week_fails_invalid_week_num_lower_bound() {
+		assert_eq!(parse_week("2022-W00"), None);
+		assert_eq!(parse_week("1897-W00"), None);
+	}
+
+	#[test]
+	fn test_parse_week_fails_invalid_week_num_upper_bound() {
+		assert_eq!(parse_week("2004-W54"), None);
+		assert_eq!(parse_week("1996-W53"), None);
 	}
 }
