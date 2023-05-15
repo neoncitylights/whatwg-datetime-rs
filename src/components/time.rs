@@ -2,6 +2,16 @@ use crate::utils::{collect_ascii_digits, is_valid_hour, is_valid_min_or_sec};
 use chrono::NaiveTime;
 use whatwg_infra::collect_codepoints;
 
+pub fn parse_time(s: &str) -> Option<NaiveTime> {
+	let mut position = 0usize;
+	let time = parse_time_component(s, &mut position)?;
+	if position < s.len() {
+		return None;
+	}
+
+	Some(time)
+}
+
 pub fn parse_time_component(s: &str, position: &mut usize) -> Option<NaiveTime> {
 	let parsed_hour = collect_ascii_digits(s, position);
 	if parsed_hour.len() != 2 {
@@ -28,7 +38,8 @@ pub fn parse_time_component(s: &str, position: &mut usize) -> Option<NaiveTime> 
 		return None;
 	}
 
-	let mut second = 0u8;
+	let mut seconds = 0u32;
+	let mut milliseconds = 0u32;
 	if *position < s.len() && s.chars().nth(*position) == Some(':') {
 		*position += 1;
 
@@ -40,30 +51,119 @@ pub fn parse_time_component(s: &str, position: &mut usize) -> Option<NaiveTime> 
 			collect_codepoints(s, position, |c| c.is_ascii_digit() || c == '.');
 		let parsed_second_len = parsed_second.len();
 		if parsed_second_len == 3
-			|| (parsed_second_len > 3 && parsed_second.chars().nth(3) != Some('.'))
-			|| parsed_second.chars().any(|c| c == '.')
+			|| (parsed_second_len > 3 && parsed_second.chars().nth(2) != Some('.'))
+			|| has_at_least_n_instances(s, '.', 2)
 		{
 			return None;
 		}
 
-		second = parsed_second.parse::<u8>().ok()?;
-		if !is_valid_min_or_sec(&second) {
+		let (parsed_seconds, parsed_milliseconds) =
+			parse_seconds_milliseconds(&parsed_second);
+		seconds = parsed_seconds;
+		milliseconds = parsed_milliseconds;
+		if !(0..60).contains(&parsed_seconds) {
 			return None;
 		}
 	}
 
-	NaiveTime::from_hms_opt(hour as u32, minute as u32, second as u32)
+	NaiveTime::from_hms_milli_opt(hour as u32, minute as u32, seconds, milliseconds)
+}
+
+fn has_at_least_n_instances(s: &str, c: char, n: usize) -> bool {
+	let mut count = 0usize;
+	for ch in s.chars() {
+		if ch == c {
+			count += 1usize;
+			if count >= n {
+				return true;
+			}
+		}
+	}
+	false
+}
+
+fn parse_seconds_milliseconds(s: &str) -> (u32, u32) {
+	let parts: Vec<&str> = s.split('.').collect();
+	let seconds = parts.first().unwrap_or(&"0").parse().unwrap_or(0);
+
+	let milliseconds = parts.get(1).unwrap_or(&"0").parse().unwrap_or(0);
+
+	(seconds, milliseconds)
 }
 
 #[cfg(test)]
 mod tests {
-	use super::{parse_time_component, NaiveTime};
+	use super::{parse_time, parse_time_component, NaiveTime};
+
+	#[test]
+	fn test_parse_time_succeeds_hm() {
+		assert_eq!(
+			parse_time("12:31"),
+			NaiveTime::from_hms_milli_opt(12, 31, 0, 0)
+		);
+	}
+
+	#[test]
+	fn test_parse_time_succeeds_hms() {
+		assert_eq!(
+			parse_time("12:31:59"),
+			NaiveTime::from_hms_milli_opt(12, 31, 59, 0)
+		);
+	}
+
+	#[test]
+	fn test_parse_time_succeeds_hms_fractional_seconds() {
+		assert_eq!(
+			parse_time("14:54:39.929"),
+			NaiveTime::from_hms_milli_opt(14, 54, 39, 929)
+		);
+	}
+
+	#[test]
+	fn test_parse_time_fails_multiple_decimals() {
+		assert_eq!(parse_time("12:31:59...29"), None);
+	}
+
+	#[test]
+	fn test_parse_time_fails_hour_length() {
+		assert_eq!(parse_time("123:31:59"), None);
+	}
+
+	#[test]
+	fn test_parse_time_fails_hour_value_upper_bound() {
+		assert_eq!(parse_time("24:31:59"), None);
+	}
+
+	#[test]
+	fn test_parse_time_fails_delimiter() {
+		assert_eq!(parse_time("12-31-59"), None);
+	}
+
+	#[test]
+	fn test_parse_time_fails_minute_length() {
+		assert_eq!(parse_time("12:311:59"), None);
+	}
+
+	#[test]
+	fn test_parse_time_fails_minute_value_upper_bound() {
+		assert_eq!(parse_time("12:79:59"), None);
+	}
+
+	#[test]
+	fn test_parse_time_fails_seconds_length() {
+		assert_eq!(parse_time("12:31:591"), None);
+	}
+
+	#[test]
+	fn test_parse_time_fails_seconds_value_upper_bound() {
+		assert_eq!(parse_time("12:31:79"), None);
+	}
 
 	#[test]
 	fn test_parse_time_component() {
 		let mut position = 0usize;
 		let parsed = parse_time_component("12:31:59", &mut position);
 
-		assert_eq!(parsed, NaiveTime::from_hms_opt(12, 31, 59));
+		assert_eq!(parsed, NaiveTime::from_hms_milli_opt(12, 31, 59, 0));
 	}
 }
