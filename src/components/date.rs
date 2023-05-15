@@ -1,7 +1,8 @@
 use crate::utils::{collect_ascii_digits, max_days_in_month_year};
 use crate::{parse_month_component, TOKEN_DATETIME_SEPARATOR};
+use chrono::NaiveDate;
 
-pub fn parse_date(s: &str) -> Option<(u32, u8, u8)> {
+pub fn parse_date(s: &str) -> Option<NaiveDate> {
 	let mut position = 0usize;
 	let parsed = parse_date_component(s, &mut position)?;
 	if position < s.len() {
@@ -11,7 +12,7 @@ pub fn parse_date(s: &str) -> Option<(u32, u8, u8)> {
 	Some(parsed)
 }
 
-pub fn parse_date_component(s: &str, position: &mut usize) -> Option<(u32, u8, u8)> {
+pub fn parse_date_component(s: &str, position: &mut usize) -> Option<NaiveDate> {
 	let (year, month) = parse_month_component(s, position)?;
 
 	if *position > s.len() || s.chars().nth(*position) != Some(TOKEN_DATETIME_SEPARATOR) {
@@ -32,18 +33,52 @@ pub fn parse_date_component(s: &str, position: &mut usize) -> Option<(u32, u8, u
 		return None;
 	}
 
-	Some((year, month, day))
+	NaiveDate::from_ymd_opt(year as i32, month as u32, day as u32)
 }
 
 #[cfg(test)]
 mod tests {
-	use super::parse_date_component;
+	use super::parse_date;
+	use chrono::NaiveDate;
 
 	#[test]
-	fn test_parse_date_component() {
-		let mut position = 0usize;
-		let parsed = parse_date_component("2004-12-31", &mut position);
+	fn test_parse_date() {
+		assert_eq!(
+			parse_date("2011-11-18"),
+			NaiveDate::from_ymd_opt(2011, 11, 18)
+		);
+	}
 
-		assert_eq!(parsed, Some((2004, 12, 31)));
+	#[test]
+	fn test_parse_date_leap_year() {
+		assert_eq!(
+			parse_date("2012-02-29"),
+			NaiveDate::from_ymd_opt(2012, 2, 29)
+		);
+	}
+
+	#[test]
+	fn test_parse_date_fails_not_leap_year() {
+		assert_eq!(parse_date("2007-02-29"), None);
+	}
+
+	#[test]
+	fn test_parse_date_fails_invalid_month() {
+		assert_eq!(parse_date("2011-00-19"), None);
+	}
+
+	#[test]
+	fn test_parse_date_fails_invalid_day_length() {
+		assert_eq!(parse_date("2011-11-0"), None);
+	}
+
+	#[test]
+	fn test_parse_date_fails_invalid_day_upper_bound() {
+		assert_eq!(parse_date("2011-11-32"), None);
+	}
+
+	#[test]
+	fn test_parse_date_fails_invalid_separator() {
+		assert_eq!(parse_date("2011-11/19"), None);
 	}
 }
