@@ -90,7 +90,10 @@ mod tests {
 				minutes: 0
 			})
 		);
+	}
 
+	#[test]
+	pub fn test_parse_timezone_offset_plus_1_hour_colon() {
 		let mut position = 0usize;
 		let parsed = parse_timezone_offset_component("+01:00", &mut position);
 
@@ -101,7 +104,10 @@ mod tests {
 				minutes: 0
 			})
 		);
+	}
 
+	#[test]
+	pub fn test_parse_timezone_offset_neg_1_hour_colon() {
 		let mut position = 0usize;
 		let parsed = parse_timezone_offset_component("-01:00", &mut position);
 
@@ -112,7 +118,10 @@ mod tests {
 				minutes: 0
 			})
 		);
+	}
 
+	#[test]
+	pub fn test_parse_timezone_offset_plus_1_hour_no_delim() {
 		let mut position = 0usize;
 		let parsed = parse_timezone_offset_component("+0100", &mut position);
 
@@ -123,7 +132,10 @@ mod tests {
 				minutes: 0
 			})
 		);
+	}
 
+	#[test]
+	fn parse_timezone_offset_component_neg_1_hour_no_delim() {
 		let mut position = 0usize;
 		let parsed = parse_timezone_offset_component("-0100", &mut position);
 
@@ -134,49 +146,37 @@ mod tests {
 				minutes: 0
 			})
 		);
+	}
 
+	#[test]
+	fn parse_timezone_offset_fails_invalid_min_length() {
 		let mut position = 0usize;
-		let parsed = parse_timezone_offset_component("+0100", &mut position);
+		let parsed = parse_timezone_offset_component("-010", &mut position);
 
-		assert_eq!(
-			parsed,
-			Some(TimeZoneOffset {
-				hours: 1,
-				minutes: 0
-			})
-		);
+		assert_eq!(parsed, None);
+	}
 
+	#[test]
+	fn parse_timezone_offset_fails_invalid_length() {
 		let mut position = 0usize;
-		let parsed = parse_timezone_offset_component("-0100", &mut position);
+		let parsed = parse_timezone_offset_component("-01000", &mut position);
 
-		assert_eq!(
-			parsed,
-			Some(TimeZoneOffset {
-				hours: -1,
-				minutes: 0
-			})
-		);
+		assert_eq!(parsed, None);
+	}
 
+	#[test]
+	fn parse_timezone_offset_fails_invalid_hour_upper_bound() {
 		let mut position = 0usize;
-		let parsed = parse_timezone_offset_component("+0100", &mut position);
+		let parsed = parse_timezone_offset_component("+24:00", &mut position);
 
-		assert_eq!(
-			parsed,
-			Some(TimeZoneOffset {
-				hours: 1,
-				minutes: 0
-			})
-		);
+		assert_eq!(parsed, None);
+	}
 
+	#[test]
+	fn parse_timezone_offset_fails_invalid_minute_upper_bound() {
 		let mut position = 0usize;
-		let parsed = parse_timezone_offset_component("-0100", &mut position);
+		let parsed = parse_timezone_offset_component("-00:67", &mut position);
 
-		assert_eq!(
-			parsed,
-			Some(TimeZoneOffset {
-				hours: -1,
-				minutes: 0
-			})
-		);
+		assert_eq!(parsed, None);
 	}
 }
