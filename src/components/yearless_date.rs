@@ -59,9 +59,53 @@ pub fn parse_yearless_date_component(s: &str, position: &mut usize) -> Option<Ye
 mod tests {
 	#[rustfmt::skip]
 	use super::{
+		parse_yearless_date,
 		parse_yearless_date_component,
 		YearlessDate,
 	};
+
+	#[test]
+	fn test_parse_yearless_date() {
+		assert_eq!(
+			parse_yearless_date("11-18"),
+			Some(YearlessDate { month: 11, day: 18 })
+		);
+	}
+
+	#[test]
+	fn test_parse_yearless_date_fails_empty_string() {
+		assert_eq!(parse_yearless_date(""), None);
+	}
+
+	#[test]
+	fn test_parse_yearless_date_fails_separator() {
+		assert_eq!(parse_yearless_date("11/18"), None);
+	}
+
+	#[test]
+	fn test_parse_yearless_date_fails_month_upper_bound() {
+		assert_eq!(parse_yearless_date("13-01"), None);
+	}
+
+	#[test]
+	fn test_parse_yearless_date_fails_month_length() {
+		assert_eq!(parse_yearless_date("1-01"), None);
+	}
+
+	#[test]
+	fn test_parse_yearless_date_fails_day_lower_bound() {
+		assert_eq!(parse_yearless_date("01-00"), None);
+	}
+
+	#[test]
+	fn test_parse_yearless_date_fails_day_upper_bound() {
+		assert_eq!(parse_yearless_date("01-32"), None);
+	}
+
+	#[test]
+	fn test_parse_yearless_date_fails_day_length() {
+		assert_eq!(parse_yearless_date("01-9"), None);
+	}
 
 	#[test]
 	fn test_parse_yearless_date_component() {
@@ -69,5 +113,21 @@ mod tests {
 		let parsed = parse_yearless_date_component("12-31", &mut position);
 
 		assert_eq!(parsed, Some(YearlessDate { month: 12, day: 31 }));
+	}
+
+	#[test]
+	fn test_parse_yearless_date_component_fails_empty_string() {
+		let mut position = 0usize;
+		let parsed = parse_yearless_date_component("", &mut position);
+
+		assert_eq!(parsed, None);
+	}
+
+	#[test]
+	fn test_parse_yearless_date_only_one_separator() {
+		let mut position = 0usize;
+		let parsed = parse_yearless_date_component("-", &mut position);
+
+		assert_eq!(parsed, None);
 	}
 }
