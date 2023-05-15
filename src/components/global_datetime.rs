@@ -1,10 +1,10 @@
-use chrono::{DateTime, Duration, NaiveDate, NaiveDateTime, Utc};
+use chrono::{DateTime, Duration, NaiveDateTime, Utc};
 
 use crate::{parse_date_component, parse_time_component, parse_timezone_offset_component};
 
 pub fn parse_global_datetime(s: &str) -> Option<DateTime<Utc>> {
 	let mut position = 0usize;
-	let (year, month, day) = parse_date_component(s, &mut position)?;
+	let date = parse_date_component(s, &mut position)?;
 	let last_char = s.chars().nth(position);
 	if position > s.len() || !matches!(last_char, Some('T') | Some(' ')) {
 		return None;
@@ -19,7 +19,6 @@ pub fn parse_global_datetime(s: &str) -> Option<DateTime<Utc>> {
 	if position < s.len() {
 		return None;
 	}
-	let date = NaiveDate::from_ymd_opt(year as i32, month as u32, day as u32)?;
 	let timezone_offset_as_duration = Duration::minutes(
 		timezone_offset.minutes as i64 + timezone_offset.hours as i64 * 60,
 	);

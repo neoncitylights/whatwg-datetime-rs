@@ -1,9 +1,9 @@
 use crate::{parse_date_component, parse_time_component};
-use chrono::{NaiveDate, NaiveDateTime};
+use chrono::NaiveDateTime;
 
 pub fn parse_local_datetime(s: &str) -> Option<NaiveDateTime> {
 	let mut position = 0usize;
-	let (year, month, day) = parse_date_component(s, &mut position)?;
+	let date = parse_date_component(s, &mut position)?;
 
 	let last_char = s.chars().nth(position);
 	if position > s.len() || !matches!(last_char, Some('T') | Some(' ')) {
@@ -17,7 +17,6 @@ pub fn parse_local_datetime(s: &str) -> Option<NaiveDateTime> {
 		return None;
 	}
 
-	let date = NaiveDate::from_ymd_opt(year as i32, month as u32, day as u32)?;
 	Some(NaiveDateTime::new(date, time))
 }
 
