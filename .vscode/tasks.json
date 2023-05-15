@@ -9,6 +9,18 @@
 			],
 			"group": "build",
 			"label": "rust: cargo doc"
+		},
+		{
+			"type": "cargo",
+			"command": "llvm-cov",
+			"problemMatcher": [
+				"$rustc"
+			],
+			"args": [
+				"--html"
+			],
+			"group": "test",
+			"label": "rust: cargo llvm-cov"
 		}
 	]
 }
