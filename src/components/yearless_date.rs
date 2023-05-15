@@ -66,7 +66,10 @@ mod tests {
 
 	#[test]
 	fn test_parse_yearless_date() {
-		assert_eq!(parse_yearless_date("11-18"), Some(YearlessDate { month: 11, day: 18 }));
+		assert_eq!(
+			parse_yearless_date("11-18"),
+			Some(YearlessDate { month: 11, day: 18 })
+		);
 	}
 
 	#[test]
