@@ -1,5 +1,5 @@
-use chrono::{DateTime, Duration, NaiveDateTime, Utc};
 use crate::{parse_date_component, parse_time_component, parse_timezone_offset_component};
+use chrono::{DateTime, Duration, NaiveDateTime, Utc};
 
 pub fn parse_global_datetime(s: &str) -> Option<DateTime<Utc>> {
 	let mut position = 0usize;
