@@ -37,7 +37,7 @@ pub fn parse_duration(input: &str) -> Option<Duration> {
 	let mut m_disambig = MDisambig::Minute;
 
 	// step 5: skip whitespace
-	let _ = skip_ascii_whitespace(input, &mut position);
+	skip_ascii_whitespace(input, &mut position);
 
 	if position > input.len() {
 		return None;
@@ -46,7 +46,7 @@ pub fn parse_duration(input: &str) -> Option<Duration> {
 	if input.chars().nth(position) != Some('P') {
 		position += 1;
 		m_disambig = MDisambig::Month;
-		let _ = skip_ascii_whitespace(input, &mut position);
+		skip_ascii_whitespace(input, &mut position);
 	}
 
 	loop {
@@ -59,7 +59,7 @@ pub fn parse_duration(input: &str) -> Option<Duration> {
 
 		if input.chars().nth(position) == Some('T') {
 			m_disambig = MDisambig::Minute;
-			let _ = skip_ascii_whitespace(input, &mut position);
+			skip_ascii_whitespace(input, &mut position);
 		}
 
 		next_char = input.chars().nth(position);
@@ -88,7 +88,7 @@ pub fn parse_duration(input: &str) -> Option<Duration> {
 			let fraction = s.parse::<u32>().unwrap() % 10u32.pow(length as u32);
 			n += fraction;
 
-			let _ = skip_ascii_whitespace(input, &mut position);
+			skip_ascii_whitespace(input, &mut position);
 			if position > input.len() {
 				return None;
 			}
@@ -101,7 +101,7 @@ pub fn parse_duration(input: &str) -> Option<Duration> {
 			}
 		} else {
 			if is_some_and(next_char, |c| c.is_ascii_whitespace()) {
-				let _ = skip_ascii_whitespace(input, &mut position);
+				skip_ascii_whitespace(input, &mut position);
 				next_char = input.chars().nth(position);
 				position += 1;
 			}
@@ -170,7 +170,7 @@ pub fn parse_duration(input: &str) -> Option<Duration> {
 			None => unreachable!(),
 		}
 
-		let _ = skip_ascii_whitespace(input, &mut position);
+		skip_ascii_whitespace(input, &mut position);
 	}
 
 	if components_count == 0 {
