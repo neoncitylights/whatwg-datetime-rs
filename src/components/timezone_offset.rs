@@ -82,6 +82,10 @@ pub fn parse_timezone_offset_component(s: &str, position: &mut usize) -> Option<
 				return None;
 			}
 
+			if !(0..=59).contains(&minutes) {
+				return None;
+			}
+
 			if sign == TimeZoneSign::Negative {
 				hours *= -1;
 				minutes *= -1;
