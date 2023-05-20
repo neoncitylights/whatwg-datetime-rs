@@ -7,6 +7,7 @@ pub struct TimeZoneOffset {
 }
 
 impl TimeZoneOffset {
+	#[inline]
 	pub(crate) fn new(hours: i8, minutes: i8) -> Self {
 		Self { hours, minutes }
 	}

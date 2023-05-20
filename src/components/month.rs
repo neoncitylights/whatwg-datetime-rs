@@ -1,5 +1,5 @@
-use crate::utils::{collect_ascii_digits, is_valid_month};
-use crate::TOKEN_DATETIME_SEPARATOR;
+use crate::utils::collect_ascii_digits;
+use crate::{collect_month_and_validate, TOKEN_DATETIME_SEPARATOR};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct YearMonth {
@@ -36,16 +36,7 @@ pub fn parse_month_component(s: &str, position: &mut usize) -> Option<YearMonth>
 		*position += 1;
 	}
 
-	let parsed_month = collect_ascii_digits(s, position);
-	if parsed_month.len() != 2 {
-		return None;
-	}
-
-	let month = parsed_month.parse::<u8>().ok()?;
-	if !is_valid_month(&month) {
-		return None;
-	}
-
+	let month = collect_month_and_validate(s, position)?;
 	Some(YearMonth::new(year, month))
 }
 
