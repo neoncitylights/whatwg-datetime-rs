@@ -6,10 +6,37 @@ pub struct TimeZoneOffset {
 	pub(crate) minutes: i8,
 }
 
+impl TimeZoneOffset {
+	pub(crate) fn new(hours: i8, minutes: i8) -> Self {
+		Self { hours, minutes }
+	}
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TimeZoneSign {
 	Positive,
 	Negative,
+}
+
+impl TryFrom<char> for TimeZoneSign {
+	type Error = ();
+	fn try_from(value: char) -> Result<Self, Self::Error> {
+		match value {
+			'+' => Ok(TimeZoneSign::Positive),
+			'-' => Ok(TimeZoneSign::Negative),
+			_ => Err(()),
+		}
+	}
+}
+
+pub fn parse_timezone_offset(s: &str) -> Option<TimeZoneOffset> {
+	let mut position = 0usize;
+	let parsed = parse_timezone_offset_component(s, &mut position)?;
+	if position < s.len() {
+		return None;
+	}
+
+	Some(parsed)
 }
 
 pub fn parse_timezone_offset_component(s: &str, position: &mut usize) -> Option<TimeZoneOffset> {
@@ -23,12 +50,7 @@ pub fn parse_timezone_offset_component(s: &str, position: &mut usize) -> Option<
 			*position += 1;
 		}
 		Some('+') | Some('-') => {
-			let sign = match char_at {
-				Some('+') => TimeZoneSign::Positive,
-				Some('-') => TimeZoneSign::Negative,
-				_ => unreachable!(),
-			};
-
+			let sign = TimeZoneSign::try_from(char_at.unwrap()).ok().unwrap();
 			*position += 1;
 
 			let collected = collect_ascii_digits(s, position);
@@ -71,25 +93,47 @@ pub fn parse_timezone_offset_component(s: &str, position: &mut usize) -> Option<
 		_ => (),
 	}
 
-	Some(TimeZoneOffset { hours, minutes })
+	Some(TimeZoneOffset::new(hours, minutes))
 }
 
 #[cfg(test)]
 mod tests {
-	use super::{parse_timezone_offset_component, TimeZoneOffset};
+	#[rustfmt::skip]
+	use super::{
+		parse_timezone_offset,
+		parse_timezone_offset_component,
+		TimeZoneOffset,
+		TimeZoneSign,
+	};
 
 	#[test]
-	pub fn test_parse_timezone_offset_component() {
-		let mut position = 0usize;
-		let parsed = parse_timezone_offset_component("Z", &mut position);
+	pub fn test_parse_timezone_sign_tryfrom_char_positive() {
+		let parsed = TimeZoneSign::try_from('+');
+		assert_eq!(parsed, Ok(TimeZoneSign::Positive));
+	}
 
-		assert_eq!(
-			parsed,
-			Some(TimeZoneOffset {
-				hours: 0,
-				minutes: 0
-			})
-		);
+	#[test]
+	pub fn test_parse_timezone_sign_tryfrom_char_negative() {
+		let parsed = TimeZoneSign::try_from('-');
+		assert_eq!(parsed, Ok(TimeZoneSign::Negative));
+	}
+
+	#[test]
+	pub fn test_parse_timezone_sign_tryfrom_char_fails() {
+		let parsed = TimeZoneSign::try_from('a');
+		assert_eq!(parsed, Err(()));
+	}
+
+	#[test]
+	pub fn test_parse_timezone_offset() {
+		let parsed = parse_timezone_offset("+01:00");
+		assert_eq!(parsed, Some(TimeZoneOffset::new(1, 0)));
+	}
+
+	#[test]
+	pub fn test_parse_timezone_offset_z() {
+		let parsed = parse_timezone_offset("Z");
+		assert_eq!(parsed, Some(TimeZoneOffset::new(0, 0)));
 	}
 
 	#[test]
@@ -97,13 +141,7 @@ mod tests {
 		let mut position = 0usize;
 		let parsed = parse_timezone_offset_component("+01:00", &mut position);
 
-		assert_eq!(
-			parsed,
-			Some(TimeZoneOffset {
-				hours: 1,
-				minutes: 0
-			})
-		);
+		assert_eq!(parsed, Some(TimeZoneOffset::new(1, 0)));
 	}
 
 	#[test]
@@ -111,13 +149,7 @@ mod tests {
 		let mut position = 0usize;
 		let parsed = parse_timezone_offset_component("-01:00", &mut position);
 
-		assert_eq!(
-			parsed,
-			Some(TimeZoneOffset {
-				hours: -1,
-				minutes: 0
-			})
-		);
+		assert_eq!(parsed, Some(TimeZoneOffset::new(-1, 0)));
 	}
 
 	#[test]
@@ -125,13 +157,7 @@ mod tests {
 		let mut position = 0usize;
 		let parsed = parse_timezone_offset_component("+0100", &mut position);
 
-		assert_eq!(
-			parsed,
-			Some(TimeZoneOffset {
-				hours: 1,
-				minutes: 0
-			})
-		);
+		assert_eq!(parsed, Some(TimeZoneOffset::new(1, 0)));
 	}
 
 	#[test]
@@ -139,19 +165,21 @@ mod tests {
 		let mut position = 0usize;
 		let parsed = parse_timezone_offset_component("-0100", &mut position);
 
-		assert_eq!(
-			parsed,
-			Some(TimeZoneOffset {
-				hours: -1,
-				minutes: 0
-			})
-		);
+		assert_eq!(parsed, Some(TimeZoneOffset::new(-1, 0)));
 	}
 
 	#[test]
 	fn parse_timezone_offset_fails_invalid_min_length() {
 		let mut position = 0usize;
 		let parsed = parse_timezone_offset_component("-010", &mut position);
+
+		assert_eq!(parsed, None);
+	}
+
+	#[test]
+	fn parse_timezone_offset_fails_colon_invalid_min_length() {
+		let mut position = 0usize;
+		let parsed = parse_timezone_offset_component("-01:0", &mut position);
 
 		assert_eq!(parsed, None);
 	}
