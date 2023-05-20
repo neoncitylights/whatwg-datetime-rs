@@ -1,7 +1,5 @@
+use crate::{collect_day_and_validate, collect_month_and_validate, TOKEN_DATETIME_SEPARATOR};
 use whatwg_infra::collect_codepoints;
-
-use crate::utils::{collect_ascii_digits, is_valid_month, max_days_in_month_year};
-use crate::TOKEN_DATETIME_SEPARATOR;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct YearlessDate {
@@ -32,33 +30,14 @@ pub fn parse_yearless_date_component(s: &str, position: &mut usize) -> Option<Ye
 		return None;
 	}
 
-	let parsed_month = collect_ascii_digits(s, position);
-	if parsed_month.len() != 2 {
-		return None;
-	}
-
-	let month = parsed_month.parse::<u8>().ok()?;
-	if !is_valid_month(&month) {
-		return None;
-	}
-
+	let month = collect_month_and_validate(s, position)?;
 	if *position > s.len() || s.chars().nth(*position) != Some(TOKEN_DATETIME_SEPARATOR) {
 		return None;
 	} else {
 		*position += 1;
 	}
 
-	let parsed_day = collect_ascii_digits(s, position);
-	if parsed_day.len() != 2 {
-		return None;
-	}
-
-	let day = parsed_day.parse::<u8>().ok()?;
-	let max_days = max_days_in_month_year(month, 4).unwrap();
-	if !(1..=max_days).contains(&day) {
-		return None;
-	}
-
+	let day = collect_day_and_validate(s, position, month)?;
 	Some(YearlessDate::new(month, day))
 }
 
