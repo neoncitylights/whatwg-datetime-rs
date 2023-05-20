@@ -43,7 +43,9 @@ pub fn max_days_in_month_year(month: u8, year: u32) -> Option<u8> {
 
 // https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#weeks
 pub fn week_number_of_year(year: i32) -> Option<u8> {
-	let naive_date = NaiveDate::from_ymd_opt(year, 1u32, 1u32)?;
+	// We call unwrap() here since `NaiveDate::from_ymd_opt` returns `None` only
+	// if the month/day are out-of-range, which is not possible here since they're hardcoded.
+	let naive_date = NaiveDate::from_ymd_opt(year, 1u32, 1u32).unwrap();
 	let weekday = naive_date.weekday();
 
 	match weekday {
