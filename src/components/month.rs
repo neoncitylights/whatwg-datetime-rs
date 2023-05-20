@@ -1,7 +1,19 @@
 use crate::utils::{collect_ascii_digits, is_valid_month};
 use crate::TOKEN_DATETIME_SEPARATOR;
 
-pub fn parse_month(s: &str) -> Option<(u32, u8)> {
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct YearMonth {
+	pub(crate) year: u32,
+	pub(crate) month: u8,
+}
+
+impl YearMonth {
+	pub(crate) fn new(year: u32, month: u8) -> Self {
+		Self { year, month }
+	}
+}
+
+pub fn parse_month(s: &str) -> Option<YearMonth> {
 	let mut position = 0usize;
 	let parsed = parse_month_component(s, &mut position)?;
 	if position < s.len() {
@@ -11,7 +23,7 @@ pub fn parse_month(s: &str) -> Option<(u32, u8)> {
 	Some(parsed)
 }
 
-pub fn parse_month_component(s: &str, position: &mut usize) -> Option<(u32, u8)> {
+pub fn parse_month_component(s: &str, position: &mut usize) -> Option<YearMonth> {
 	let parsed_year = collect_ascii_digits(s, position);
 	if parsed_year.len() < 4 {
 		return None;
@@ -34,17 +46,17 @@ pub fn parse_month_component(s: &str, position: &mut usize) -> Option<(u32, u8)>
 		return None;
 	}
 
-	Some((year, month))
+	Some(YearMonth::new(year, month))
 }
 
 #[cfg(test)]
 mod tests {
-	use super::{parse_month, parse_month_component};
+	use super::{parse_month, parse_month_component, YearMonth};
 
 	#[test]
 	fn test_parse_month_string() {
 		let parsed = parse_month("2004-12");
-		assert_eq!(parsed, Some((2004, 12)));
+		assert_eq!(parsed, Some(YearMonth::new(2004, 12)));
 	}
 
 	#[test]
@@ -64,7 +76,7 @@ mod tests {
 		let mut position = 0usize;
 		let parsed = parse_month_component("2004-12", &mut position);
 
-		assert_eq!(parsed, Some((2004, 12)));
+		assert_eq!(parsed, Some(YearMonth::new(2004, 12)));
 	}
 
 	#[test]
