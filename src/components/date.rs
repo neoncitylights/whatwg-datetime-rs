@@ -13,7 +13,9 @@ pub fn parse_date(s: &str) -> Option<NaiveDate> {
 }
 
 pub fn parse_date_component(s: &str, position: &mut usize) -> Option<NaiveDate> {
-	let (year, month) = parse_month_component(s, position)?;
+	let year_month = parse_month_component(s, position)?;
+	let year = year_month.year;
+	let month = year_month.month;
 
 	if *position > s.len() || s.chars().nth(*position) != Some(TOKEN_DATETIME_SEPARATOR) {
 		return None;
