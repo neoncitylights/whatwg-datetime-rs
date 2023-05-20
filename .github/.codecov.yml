@@ -1,0 +1,8 @@
+# https://docs.codecov.com/docs/codecov-yaml
+# https://docs.codecov.com/docs/codecovyml-reference
+coverage:
+  status:
+    project:
+      default:
+        threshold: 2%
+        if_ci_failed: error
