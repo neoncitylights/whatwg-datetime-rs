@@ -177,7 +177,15 @@ mod tests {
 	}
 
 	#[test]
-	fn parse_timezone_offset_fails_colon_invalid_min_length() {
+	fn parse_timezone_offset_fails_colon_invalid_length_empty() {
+		let mut position = 0usize;
+		let parsed = parse_timezone_offset_component("-01:", &mut position);
+
+		assert_eq!(parsed, None);
+	}
+
+	#[test]
+	fn parse_timezone_offset_fails_colon_invalid_length() {
 		let mut position = 0usize;
 		let parsed = parse_timezone_offset_component("-01:0", &mut position);
 
