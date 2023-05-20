@@ -9,6 +9,13 @@ pub struct YearWeek {
 	pub(crate) week: u8,
 }
 
+impl YearWeek {
+	#[inline]
+	pub(crate) fn new(year: i32, week: u8) -> Self {
+		Self { year, week }
+	}
+}
+
 pub fn parse_week(input: &str) -> Option<YearWeek> {
 	// Step 1, 2
 	let mut position = 0usize;
@@ -46,7 +53,7 @@ pub fn parse_week(input: &str) -> Option<YearWeek> {
 		return None;
 	}
 
-	Some(YearWeek { year, week })
+	Some(YearWeek::new(year, week))
 }
 
 #[cfg(test)]
@@ -55,13 +62,7 @@ mod tests {
 
 	#[test]
 	fn test_parse_week() {
-		assert_eq!(
-			parse_week("2004-W53"),
-			Some(YearWeek {
-				year: 2004,
-				week: 53
-			})
-		);
+		assert_eq!(parse_week("2004-W53"), Some(YearWeek::new(2004, 53)));
 	}
 
 	#[test]

@@ -9,6 +9,13 @@ pub struct YearlessDate {
 	pub(crate) day: u8,
 }
 
+impl YearlessDate {
+	#[inline]
+	pub(crate) fn new(month: u8, day: u8) -> Self {
+		Self { month, day }
+	}
+}
+
 pub fn parse_yearless_date(s: &str) -> Option<YearlessDate> {
 	let mut position = 0usize;
 	let parsed = parse_yearless_date_component(s, &mut position)?;
@@ -52,7 +59,7 @@ pub fn parse_yearless_date_component(s: &str, position: &mut usize) -> Option<Ye
 		return None;
 	}
 
-	Some(YearlessDate { month, day })
+	Some(YearlessDate::new(month, day))
 }
 
 #[cfg(test)]
@@ -68,7 +75,7 @@ mod tests {
 	fn test_parse_yearless_date() {
 		assert_eq!(
 			parse_yearless_date("11-18"),
-			Some(YearlessDate { month: 11, day: 18 })
+			Some(YearlessDate::new(11, 18))
 		);
 	}
 
@@ -112,7 +119,7 @@ mod tests {
 		let mut position = 0usize;
 		let parsed = parse_yearless_date_component("12-31", &mut position);
 
-		assert_eq!(parsed, Some(YearlessDate { month: 12, day: 31 }));
+		assert_eq!(parsed, Some(YearlessDate::new(12, 31)));
 	}
 
 	#[test]
