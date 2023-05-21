@@ -1,4 +1,5 @@
-use crate::{collect_day_and_validate, collect_month_and_validate, TOKEN_DATETIME_SEPARATOR};
+use crate::tokens::TOKEN_HYPHEN;
+use crate::{collect_day_and_validate, collect_month_and_validate};
 use whatwg_infra::collect_codepoints;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -25,13 +26,13 @@ pub fn parse_yearless_date(s: &str) -> Option<YearlessDate> {
 }
 
 pub fn parse_yearless_date_component(s: &str, position: &mut usize) -> Option<YearlessDate> {
-	let collected = collect_codepoints(s, position, |c| c == TOKEN_DATETIME_SEPARATOR);
+	let collected = collect_codepoints(s, position, |c| c == TOKEN_HYPHEN);
 	if !matches!(collected.len(), 0 | 2) {
 		return None;
 	}
 
 	let month = collect_month_and_validate(s, position)?;
-	if *position > s.len() || s.chars().nth(*position) != Some(TOKEN_DATETIME_SEPARATOR) {
+	if *position > s.len() || s.chars().nth(*position) != Some(TOKEN_HYPHEN) {
 		return None;
 	} else {
 		*position += 1;

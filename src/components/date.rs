@@ -1,4 +1,5 @@
-use crate::{collect_day_and_validate, parse_month_component, TOKEN_DATETIME_SEPARATOR};
+use crate::tokens::TOKEN_HYPHEN;
+use crate::{collect_day_and_validate, parse_month_component};
 use chrono::NaiveDate;
 
 pub fn parse_date(s: &str) -> Option<NaiveDate> {
@@ -16,7 +17,7 @@ pub fn parse_date_component(s: &str, position: &mut usize) -> Option<NaiveDate> 
 	let year = year_month.year;
 	let month = year_month.month;
 
-	if *position > s.len() || s.chars().nth(*position) != Some(TOKEN_DATETIME_SEPARATOR) {
+	if *position > s.len() || s.chars().nth(*position) != Some(TOKEN_HYPHEN) {
 		return None;
 	} else {
 		*position += 1;

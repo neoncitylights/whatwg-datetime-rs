@@ -1,3 +1,4 @@
+use crate::tokens::{TOKEN_COLON, TOKEN_MINUS, TOKEN_PLUS, TOKEN_Z};
 use crate::utils::collect_ascii_digits;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -23,8 +24,8 @@ impl TryFrom<char> for TimeZoneSign {
 	type Error = ();
 	fn try_from(value: char) -> Result<Self, Self::Error> {
 		match value {
-			'+' => Ok(TimeZoneSign::Positive),
-			'-' => Ok(TimeZoneSign::Negative),
+			TOKEN_PLUS => Ok(TimeZoneSign::Positive),
+			TOKEN_MINUS => Ok(TimeZoneSign::Negative),
 			_ => Err(()),
 		}
 	}
@@ -47,10 +48,10 @@ pub fn parse_timezone_offset_component(s: &str, position: &mut usize) -> Option<
 	let mut hours = 0i8;
 
 	match char_at {
-		Some('Z') => {
+		Some(TOKEN_Z) => {
 			*position += 1;
 		}
-		Some('+') | Some('-') => {
+		Some(TOKEN_PLUS) | Some(TOKEN_MINUS) => {
 			let sign = TimeZoneSign::try_from(char_at.unwrap()).ok().unwrap();
 			*position += 1;
 
@@ -58,7 +59,9 @@ pub fn parse_timezone_offset_component(s: &str, position: &mut usize) -> Option<
 			let collected_len = collected.len();
 			if collected_len == 2 {
 				hours = collected.parse::<i8>().unwrap();
-				if *position > s.len() || s.chars().nth(*position) != Some(':') {
+				if *position > s.len()
+					|| s.chars().nth(*position) != Some(TOKEN_COLON)
+				{
 					return None;
 				} else {
 					*position += 1;
