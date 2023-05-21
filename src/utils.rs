@@ -21,11 +21,6 @@ pub(crate) fn collect_ascii_digits(s: &str, position: &mut usize) -> String {
 	collect_codepoints(s, position, |c| c.is_ascii_digit())
 }
 
-#[inline]
-pub(crate) fn skip_ascii_whitespace(s: &str, position: &mut usize) -> String {
-	collect_codepoints(s, position, |c| c.is_ascii_whitespace())
-}
-
 pub fn max_days_in_month_year(month: u8, year: u32) -> Option<u8> {
 	match month {
 		1 | 3 | 5 | 7 | 8 | 10 | 12 => Some(31),
@@ -63,12 +58,7 @@ pub fn week_number_of_year(year: i32) -> Option<u8> {
 
 #[cfg(test)]
 mod tests {
-	#[rustfmt::skip]
-	use super::{
-		max_days_in_month_year,
-		week_number_of_year,
-		skip_ascii_whitespace,
-	};
+	use super::{max_days_in_month_year, week_number_of_year};
 
 	#[test]
 	fn test_max_days_in_month_28_days() {
@@ -137,21 +127,5 @@ mod tests {
 	fn test_week_number_of_year_starts_on_wednesday_and_not_leap_year_is_52() {
 		assert_eq!(week_number_of_year(2014), Some(52));
 		assert_eq!(week_number_of_year(2025), Some(52));
-	}
-
-	#[test]
-	fn test_skip_ascii_whitespace_empty() {
-		let mut position = 0usize;
-		assert_eq!(skip_ascii_whitespace("", &mut position), String::new());
-	}
-
-	#[test]
-	fn test_skip_ascii_whitespace() {
-		let mut position = 0usize;
-		let s = "   test";
-		let skip = skip_ascii_whitespace(s, &mut position);
-		assert_eq!(skip, "   ");
-		assert_eq!(position, 3);
-		assert_eq!(&s[position..], "test");
 	}
 }

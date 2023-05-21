@@ -1,4 +1,4 @@
-use crate::tokens::TOKEN_T;
+use crate::tokens::{TOKEN_SPACE, TOKEN_T};
 use crate::{parse_date_component, parse_time_component, parse_timezone_offset_component};
 use chrono::{DateTime, Duration, NaiveDateTime, Utc};
 
@@ -7,7 +7,7 @@ pub fn parse_global_datetime(s: &str) -> Option<DateTime<Utc>> {
 	let date = parse_date_component(s, &mut position)?;
 
 	let last_char = s.chars().nth(position);
-	if position > s.len() || !matches!(last_char, Some(TOKEN_T) | Some(' ')) {
+	if position > s.len() || !matches!(last_char, Some(TOKEN_T) | Some(TOKEN_SPACE)) {
 		return None;
 	} else {
 		position += 1;
