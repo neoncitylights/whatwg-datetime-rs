@@ -1,6 +1,6 @@
 use crate::tokens::TOKEN_HYPHEN;
 use crate::utils::collect_ascii_digits;
-use crate::{collect_month_and_validate, parse_value};
+use crate::{collect_month_and_validate, parse_format};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct YearMonth {
@@ -16,7 +16,7 @@ impl YearMonth {
 
 #[inline]
 pub fn parse_month(s: &str) -> Option<YearMonth> {
-	parse_value(s, parse_month_component)
+	parse_format(s, parse_month_component)
 }
 
 pub fn parse_month_component(s: &str, position: &mut usize) -> Option<YearMonth> {

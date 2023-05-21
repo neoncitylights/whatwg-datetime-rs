@@ -1,5 +1,5 @@
 use crate::tokens::TOKEN_HYPHEN;
-use crate::{collect_day_and_validate, collect_month_and_validate, parse_value};
+use crate::{collect_day_and_validate, collect_month_and_validate, parse_format};
 use whatwg_infra::collect_codepoints;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -17,7 +17,7 @@ impl YearlessDate {
 
 #[inline]
 pub fn parse_yearless_date(s: &str) -> Option<YearlessDate> {
-	parse_value(s, parse_yearless_date_component)
+	parse_format(s, parse_yearless_date_component)
 }
 
 pub fn parse_yearless_date_component(s: &str, position: &mut usize) -> Option<YearlessDate> {

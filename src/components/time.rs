@@ -1,4 +1,4 @@
-use crate::parse_value;
+use crate::parse_format;
 use crate::tokens::{TOKEN_COLON, TOKEN_DOT};
 use crate::utils::{collect_ascii_digits, is_valid_hour, is_valid_min_or_sec};
 use chrono::NaiveTime;
@@ -6,7 +6,7 @@ use whatwg_infra::collect_codepoints;
 
 #[inline]
 pub fn parse_time(s: &str) -> Option<NaiveTime> {
-	parse_value(s, parse_time_component)
+	parse_format(s, parse_time_component)
 }
 
 pub fn parse_time_component(s: &str, position: &mut usize) -> Option<NaiveTime> {

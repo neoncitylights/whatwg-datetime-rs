@@ -1,10 +1,10 @@
 use crate::tokens::TOKEN_HYPHEN;
-use crate::{collect_day_and_validate, parse_month_component, parse_value};
+use crate::{collect_day_and_validate, parse_month_component, parse_format};
 use chrono::NaiveDate;
 
 #[inline]
 pub fn parse_date(s: &str) -> Option<NaiveDate> {
-	parse_value(s, parse_date_component)
+	parse_format(s, parse_date_component)
 }
 
 pub fn parse_date_component(s: &str, position: &mut usize) -> Option<NaiveDate> {
