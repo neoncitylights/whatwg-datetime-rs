@@ -1,3 +1,4 @@
+use crate::parse_value;
 use crate::tokens::{TOKEN_COLON, TOKEN_MINUS, TOKEN_PLUS, TOKEN_Z};
 use crate::utils::collect_ascii_digits;
 
@@ -31,14 +32,9 @@ impl TryFrom<char> for TimeZoneSign {
 	}
 }
 
+#[inline]
 pub fn parse_timezone_offset(s: &str) -> Option<TimeZoneOffset> {
-	let mut position = 0usize;
-	let parsed = parse_timezone_offset_component(s, &mut position)?;
-	if position < s.len() {
-		return None;
-	}
-
-	Some(parsed)
+	parse_value(s, parse_timezone_offset_component)
 }
 
 pub fn parse_timezone_offset_component(s: &str, position: &mut usize) -> Option<TimeZoneOffset> {
