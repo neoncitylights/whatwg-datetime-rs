@@ -1,4 +1,4 @@
-use crate::tokens::{TOKEN_P, TOKEN_T};
+use crate::tokens::{TOKEN_DOT, TOKEN_P, TOKEN_T};
 use crate::utils::{collect_ascii_digits, skip_ascii_whitespace};
 use chrono::Duration;
 
@@ -66,7 +66,7 @@ pub fn parse_duration(input: &str) -> Option<Duration> {
 		next_char = input.chars().nth(position);
 		let mut n: u32;
 
-		if next_char == Some('.') {
+		if next_char == Some(TOKEN_DOT) {
 			n = 0u32;
 		} else if is_some_and(next_char, |c| c.is_ascii_digit()) {
 			n = collect_ascii_digits(input, &mut position)
@@ -83,7 +83,7 @@ pub fn parse_duration(input: &str) -> Option<Duration> {
 		next_char = input.chars().nth(position);
 		position += 1;
 
-		if next_char == Some('.') {
+		if next_char == Some(TOKEN_DOT) {
 			let s = collect_ascii_digits(input, &mut position);
 			let length = s.len();
 			let fraction = s.parse::<u32>().unwrap() % 10u32.pow(length as u32);
