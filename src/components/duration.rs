@@ -1,6 +1,7 @@
 use crate::tokens::{TOKEN_DOT, TOKEN_P, TOKEN_T};
-use crate::utils::{collect_ascii_digits, skip_ascii_whitespace};
+use crate::utils::collect_ascii_digits;
 use chrono::Duration;
+use whatwg_infra::collect_codepoints;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) enum MDisambig {
@@ -183,4 +184,30 @@ pub fn parse_duration(input: &str) -> Option<Duration> {
 	}
 
 	Some(Duration::seconds(seconds.into()))
+}
+
+#[inline]
+fn skip_ascii_whitespace(s: &str, position: &mut usize) -> String {
+	collect_codepoints(s, position, |c| c.is_ascii_whitespace())
+}
+
+#[cfg(test)]
+mod tests {
+	use super::skip_ascii_whitespace;
+
+	#[test]
+	fn test_skip_ascii_whitespace_empty() {
+		let mut position = 0usize;
+		assert_eq!(skip_ascii_whitespace("", &mut position), String::new());
+	}
+
+	#[test]
+	fn test_skip_ascii_whitespace() {
+		let mut position = 0usize;
+		let s = "   test";
+		let skip = skip_ascii_whitespace(s, &mut position);
+		assert_eq!(skip, "   ");
+		assert_eq!(position, 3);
+		assert_eq!(&s[position..], "test");
+	}
 }
