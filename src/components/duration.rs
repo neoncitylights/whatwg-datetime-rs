@@ -1,3 +1,4 @@
+use crate::tokens::{TOKEN_P, TOKEN_T};
 use crate::utils::{collect_ascii_digits, skip_ascii_whitespace};
 use chrono::Duration;
 
@@ -43,7 +44,7 @@ pub fn parse_duration(input: &str) -> Option<Duration> {
 		return None;
 	}
 
-	if input.chars().nth(position) != Some('P') {
+	if input.chars().nth(position) != Some(TOKEN_P) {
 		position += 1;
 		m_disambig = MDisambig::Month;
 		let _ = skip_ascii_whitespace(input, &mut position);
@@ -57,7 +58,7 @@ pub fn parse_duration(input: &str) -> Option<Duration> {
 			break;
 		}
 
-		if input.chars().nth(position) == Some('T') {
+		if input.chars().nth(position) == Some(TOKEN_T) {
 			m_disambig = MDisambig::Minute;
 			let _ = skip_ascii_whitespace(input, &mut position);
 		}

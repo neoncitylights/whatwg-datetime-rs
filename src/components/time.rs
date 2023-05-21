@@ -1,3 +1,4 @@
+use crate::tokens::TOKEN_COLON;
 use crate::utils::{collect_ascii_digits, is_valid_hour, is_valid_min_or_sec};
 use chrono::NaiveTime;
 use whatwg_infra::collect_codepoints;
@@ -23,7 +24,7 @@ pub fn parse_time_component(s: &str, position: &mut usize) -> Option<NaiveTime> 
 		return None;
 	}
 
-	if *position > s.len() || s.chars().nth(*position) != Some(':') {
+	if *position > s.len() || s.chars().nth(*position) != Some(TOKEN_COLON) {
 		return None;
 	} else {
 		*position += 1;
@@ -40,7 +41,7 @@ pub fn parse_time_component(s: &str, position: &mut usize) -> Option<NaiveTime> 
 
 	let mut seconds = 0u32;
 	let mut milliseconds = 0u32;
-	if *position < s.len() && s.chars().nth(*position) == Some(':') {
+	if *position < s.len() && s.chars().nth(*position) == Some(TOKEN_COLON) {
 		*position += 1;
 
 		if *position >= s.len() {

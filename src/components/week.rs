@@ -1,7 +1,5 @@
-use crate::{
-	utils::{collect_ascii_digits, week_number_of_year},
-	TOKEN_ABBR_WEEK, TOKEN_DATETIME_SEPARATOR,
-};
+use crate::tokens::{TOKEN_ABBR_WEEK, TOKEN_HYPHEN};
+use crate::utils::{collect_ascii_digits, week_number_of_year};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct YearWeek {
@@ -28,7 +26,7 @@ pub fn parse_week(input: &str) -> Option<YearWeek> {
 	}
 
 	// Step 5
-	if position > input.len() || input.chars().nth(position) != Some(TOKEN_DATETIME_SEPARATOR) {
+	if position > input.len() || input.chars().nth(position) != Some(TOKEN_HYPHEN) {
 		return None;
 	} else {
 		position += 1;
