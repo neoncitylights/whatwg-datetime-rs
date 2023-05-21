@@ -169,6 +169,14 @@ mod tests {
 	}
 
 	#[test]
+	fn parse_timezone_offset_fails_not_colon() {
+		let mut position = 0usize;
+		let parsed = parse_timezone_offset_component("-01/", &mut position);
+
+		assert_eq!(parsed, None);
+	}
+
+	#[test]
 	fn parse_timezone_offset_fails_invalid_min_length() {
 		let mut position = 0usize;
 		let parsed = parse_timezone_offset_component("-010", &mut position);
