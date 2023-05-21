@@ -1,5 +1,5 @@
 use crate::tokens::TOKEN_HYPHEN;
-use crate::{collect_day_and_validate, parse_month_component, parse_format};
+use crate::{collect_day_and_validate, parse_format, parse_month_component};
 use chrono::NaiveDate;
 
 #[inline]
