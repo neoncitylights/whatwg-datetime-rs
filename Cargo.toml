@@ -29,7 +29,7 @@ exclude = [
 # this makes it explicitly not do this as there is an advisory warning against this:
 # See: https://github.com/chronotope/chrono/issues/602
 chrono = { version = "0.4", default-features = false, features = ["clock", "std", "wasmbind"] }
-whatwg-infra = "0.2.0"
+whatwg-infra = "0.2.1"
 
 [dev-dependencies]
 criterion = { version = "0.4.0", features = ["html_reports"] }
