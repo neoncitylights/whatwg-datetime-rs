@@ -16,7 +16,7 @@ impl TimeZoneOffset {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum TimeZoneSign {
+enum TimeZoneSign {
 	Positive,
 	Negative,
 }

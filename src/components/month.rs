@@ -14,6 +14,25 @@ impl YearMonth {
 	}
 }
 
+/// Parse a [proleptic-Gregorian date][proleptic-greg] consisting of a year and a month,
+/// with no time-zone or date information
+///
+/// This follows the rules for [parsing a month string][whatwg-html-parse]
+/// per [WHATWG HTML Standard § 2.3.5.1 Months][whatwg-html-months].
+///
+/// # Examples
+/// // ```
+/// //use whatwg_datetime::{parse_month, YearMonth};
+///
+/// // assert_eq!(
+/// //    parse_month("2011-11"),
+/// //    Some(YearMonth::new(2011, 11))
+/// //);
+/// // ```
+///
+/// [proleptic-greg]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#proleptic-gregorian-date
+/// [whatwg-html-months]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#months
+/// [whatwg-html-parse]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#parse-a-month-string
 #[inline]
 pub fn parse_month(s: &str) -> Option<YearMonth> {
 	parse_format(s, parse_month_component)
@@ -26,6 +45,10 @@ pub fn parse_month_component(s: &str, position: &mut usize) -> Option<YearMonth>
 	}
 
 	let year = parsed_year.parse::<u32>().ok()?;
+	if year == 0 {
+		return None;
+	}
+
 	if *position > s.len() || s.chars().nth(*position) != Some(TOKEN_HYPHEN) {
 		return None;
 	} else {

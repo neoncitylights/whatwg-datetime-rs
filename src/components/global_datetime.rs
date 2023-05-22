@@ -2,6 +2,33 @@ use crate::tokens::{TOKEN_SPACE, TOKEN_T};
 use crate::{parse_date_component, parse_time_component, parse_timezone_offset_component};
 use chrono::{DateTime, Duration, NaiveDateTime, Utc};
 
+/// Parse a [proleptic-Gregorian date][proleptic-greg] consisting
+/// of a date, time, and an optional time-zone offset
+///
+/// This follows the rules for [parsing a global datetime string][whatwg-html-parse]
+/// per [WHATWG HTML Standard § 2.3.5.7 Global dates and times][whatwg-html-global-datetime].
+///
+/// # Examples
+/// A global date-time string with a time (hours and minutes):
+/// ```
+/// use chrono::{DateTime, NaiveDate, NaiveDateTime, NaiveTime, Utc};
+/// use whatwg_datetime::parse_global_datetime;
+///
+/// assert_eq!(
+///     parse_global_datetime("2011-11-18T14:54Z"),
+///     Some(DateTime::<Utc>::from_utc(
+///         NaiveDateTime::new(
+///             NaiveDate::from_ymd_opt(2011, 11, 18).unwrap(),
+///             NaiveTime::from_hms_opt(14, 54, 0).unwrap(),
+///         ),
+///         Utc,
+///     ))
+/// );
+/// ```
+///
+/// [proleptic-greg]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#proleptic-gregorian-date
+/// [whatwg-html-global-datetime]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#global-dates-and-times
+/// [whatwg-html-parse]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#parse-a-global-date-and-time-string
 pub fn parse_global_datetime(s: &str) -> Option<DateTime<Utc>> {
 	let mut position = 0usize;
 	let date = parse_date_component(s, &mut position)?;
