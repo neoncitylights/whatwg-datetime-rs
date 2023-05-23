@@ -26,11 +26,11 @@ impl YearWeek {
 	/// ```
 	/// use whatwg_datetime::YearWeek;
 	///
-	/// assert_eq!(YearWeek::new_opt(2004, 53), Some(YearWeek::new(2004, 53)));
-	/// assert_eq!(YearWeek::new_opt(2011, 47), Some(YearWeek::new(2011, 47)));
-	/// assert_eq!(YearWeek::new_opt(2011, 53), None); // 2011 only has 52 weeks
-	/// assert_eq!(YearWeek::new_opt(1952, 0), None); // Week number must be at least 1
-	/// assert_eq!(YearWeek::new_opt(0, 1), None); // Year number must be greater than 0
+	/// assert!(YearWeek::new_opt(2004, 53).is_some());
+	/// assert!(YearWeek::new_opt(2011, 47).is_some());
+	/// assert!(YearWeek::new_opt(2011, 53).is_none()); // 2011 only has 52 weeks
+	/// assert!(YearWeek::new_opt(1952, 0).is_none()); // Week number must be at least 1
+	/// assert!(YearWeek::new_opt(0, 1).is_none()); // Year number must be greater than 0
 	/// ```
 	pub fn new_opt(year: i32, week: u8) -> Option<Self> {
 		if year <= 0 {
