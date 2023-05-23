@@ -12,8 +12,36 @@ impl YearWeek {
 	pub(crate) fn new(year: i32, week: u8) -> Self {
 		Self { year, week }
 	}
+
+	pub fn new_opt(year: i32, week: u8) -> Option<Self> {
+		if year <= 0 {
+			return None;
+		}
+
+		if week < 1 || week > week_number_of_year(year)? {
+			return None;
+		}
+
+		Some(Self::new(year, week))
+	}
 }
 
+/// Parse a week-year number and a week-number
+///
+/// This follows the rules for [parsing a week string][whatwg-html-parse]
+/// per [WHATWG HTML Standard § 2.3.5.8 Weeks][whatwg-html-weeks].
+///
+/// # Examples
+/// ```
+/// use whatwg_datetime::{parse_week, YearWeek};
+///
+/// assert_eq!(parse_week("2004-W53"), YearWeek::new_opt(2004, 53));
+/// assert_eq!(parse_week("2011-W47"), YearWeek::new_opt(2011, 47));
+/// assert_eq!(parse_week("2011-W53"), None); // 2011 only has 52 weeks
+/// ```
+///
+/// [whatwg-html-weeks]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#weeks
+/// [whatwg-html-parse]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#parse-a-week-string
 pub fn parse_week(input: &str) -> Option<YearWeek> {
 	// Step 1, 2
 	let mut position = 0usize;

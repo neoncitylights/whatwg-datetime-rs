@@ -12,6 +12,18 @@ impl YearMonth {
 	pub(crate) fn new(year: u32, month: u8) -> Self {
 		Self { year, month }
 	}
+
+	pub fn new_opt(year: u32, month: u8) -> Option<Self> {
+		if year == 0 {
+			return None;
+		}
+
+		if !(1..=12).contains(&month) {
+			return None;
+		}
+
+		Some(Self::new(year, month))
+	}
 }
 
 /// Parse a [proleptic-Gregorian date][proleptic-greg] consisting of a year and a month,
@@ -21,14 +33,11 @@ impl YearMonth {
 /// per [WHATWG HTML Standard § 2.3.5.1 Months][whatwg-html-months].
 ///
 /// # Examples
-/// // ```
-/// //use whatwg_datetime::{parse_month, YearMonth};
+/// ```
+/// use whatwg_datetime::{parse_month, YearMonth};
 ///
-/// // assert_eq!(
-/// //    parse_month("2011-11"),
-/// //    Some(YearMonth::new(2011, 11))
-/// //);
-/// // ```
+/// assert_eq!(parse_month("2011-11"), YearMonth::new_opt(2011, 11));
+/// ```
 ///
 /// [proleptic-greg]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#proleptic-gregorian-date
 /// [whatwg-html-months]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#months

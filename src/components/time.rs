@@ -16,10 +16,10 @@ use whatwg_infra::collect_codepoints;
 /// use whatwg_datetime::parse_time;
 ///
 /// // parse a local datetime with hours and minutes
-/// assert_eq!(parse_time("14:59"),        NaiveTime::from_hms_opt(14, 59, 0));
+/// assert_eq!(parse_time("14:59"), NaiveTime::from_hms_opt(14, 59, 0));
 ///
 /// // parse a local datetime with hours, minutes, and seconds
-/// assert_eq!(parse_time("14:59:39"),     NaiveTime::from_hms_opt(14, 59, 39));
+/// assert_eq!(parse_time("14:59:39"), NaiveTime::from_hms_opt(14, 59, 39));
 ///
 /// // parse a local datetime with hours, minutes, seconds, and milliseconds
 /// assert_eq!(parse_time("14:59:39.929"), NaiveTime::from_hms_milli_opt(14, 59, 39, 929));
