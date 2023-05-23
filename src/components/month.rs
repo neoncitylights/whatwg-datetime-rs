@@ -13,6 +13,20 @@ impl YearMonth {
 		Self { year, month }
 	}
 
+	/// Creates a new `YearMonth` from a year and a month number.
+	///
+	/// This asserts that:
+	/// - the year is greater than 0
+	/// - that the month number is between 1 and 12, inclusive
+	///
+	/// # Examples
+	/// ```
+	/// use whatwg_datetime::YearMonth;
+	///
+	/// assert!(YearMonth::new_opt(2011, 11).is_some());
+	/// assert!(YearMonth::new_opt(2011, 0).is_none()); // Month number must be at least 1
+	/// assert!(YearMonth::new_opt(0, 1).is_none()); // Year number must be greater than 0
+	/// ```
 	pub fn new_opt(year: u32, month: u8) -> Option<Self> {
 		if year == 0 {
 			return None;

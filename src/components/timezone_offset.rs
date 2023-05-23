@@ -26,7 +26,8 @@ impl TimeZoneOffset {
 	///
 	/// assert!(TimeZoneOffset::new_opt(-7, 0).is_some());
 	/// assert!(TimeZoneOffset::new_opt(23, 59).is_some());
-	/// assert!(TimeZoneOffset::new_opt(24, 0).is_none());
+	/// assert!(TimeZoneOffset::new_opt(24, 0).is_none()); // Hours must be between [-23, 23]
+	/// assert!(TimeZoneOffset::new_opt(1, 60).is_none()); // Minutes must be between [0, 59]
 	/// ```
 	pub fn new_opt(hours: i8, minutes: i8) -> Option<Self> {
 		if !(-23..=23).contains(&hours) {

@@ -30,6 +30,9 @@ impl YearlessDate {
 	/// assert!(YearlessDate::new_opt(11, 18).is_some());
 	/// assert!(YearlessDate::new_opt(2, 29).is_some());
 	/// assert!(YearlessDate::new_opt(2, 30).is_none()); // February never has 30 days
+	/// assert!(YearlessDate::new_opt(4, 31).is_none()); // April only has 30 days
+	/// assert!(YearlessDate::new_opt(13, 1).is_none()); // There are only 12 months
+	/// assert!(YearlessDate::new_opt(12, 32).is_none()); // December only has 31 days
 	/// ```
 	#[rustfmt::skip]
 	pub fn new_opt(month: u8, day: u8) -> Option<Self> {

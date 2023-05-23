@@ -13,6 +13,25 @@ impl YearWeek {
 		Self { year, week }
 	}
 
+	/// Creates a new `YearWeek` from a year and a week number.
+	///
+	/// This asserts that the year is greater than 0 and that the week number
+	/// is in the valid range for the year. Specifically, the week number
+	/// must be between 1 and the number of weeks in the year, inclusive.
+	///
+	/// The number of weeks in a year is described by the algorithm
+	/// in [WHATWG HTML Standard § 2.3.5.8 Weeks][whatwg-html-weeks].
+	///
+	/// # Examples
+	/// ```
+	/// use whatwg_datetime::YearWeek;
+	///
+	/// assert_eq!(YearWeek::new_opt(2004, 53), Some(YearWeek::new(2004, 53)));
+	/// assert_eq!(YearWeek::new_opt(2011, 47), Some(YearWeek::new(2011, 47)));
+	/// assert_eq!(YearWeek::new_opt(2011, 53), None); // 2011 only has 52 weeks
+	/// assert_eq!(YearWeek::new_opt(1952, 0), None); // Week number must be at least 1
+	/// assert_eq!(YearWeek::new_opt(0, 1), None); // Year number must be greater than 0
+	/// ```
 	pub fn new_opt(year: i32, week: u8) -> Option<Self> {
 		if year <= 0 {
 			return None;
