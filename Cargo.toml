@@ -33,19 +33,3 @@ exclude = [
 # See: https://github.com/chronotope/chrono/issues/602
 chrono = { version = "0.4", default-features = false, features = ["clock", "std", "wasmbind"] }
 whatwg-infra = "0.2.1"
-
-[dev-dependencies]
-criterion = { version = "0.4.0", features = ["html_reports"] }
-iai = "0.1.0"
-
-# criterion benchmarks
-[[bench]]
-path = "benches/criterion/fibb.rs"
-name = "criterion_fibb"
-harness = false
-
-# iai benchmarks
-[[bench]]
-path = "benches/iai/fibb.rs"
-name = "iai_fibb"
-harness = false
