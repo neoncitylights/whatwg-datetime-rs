@@ -56,7 +56,7 @@ pub fn parse_date_component(s: &str, position: &mut usize) -> Option<NaiveDate> 
 	}
 
 	let day = collect_day_and_validate(s, position, month)?;
-	NaiveDate::from_ymd_opt(year as i32, month as u32, day as u32)
+	NaiveDate::from_ymd_opt(year, month, day)
 }
 
 #[cfg(test)]

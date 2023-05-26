@@ -1,16 +1,17 @@
 use crate::tokens::TOKEN_HYPHEN;
+use crate::utils::is_valid_month;
 use crate::{collect_day_and_validate, collect_month_and_validate, parse_format};
 use whatwg_infra::collect_codepoints;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct YearlessDate {
-	pub(crate) month: u8,
-	pub(crate) day: u8,
+	pub(crate) month: u32,
+	pub(crate) day: u32,
 }
 
 impl YearlessDate {
 	#[inline]
-	pub(crate) fn new(month: u8, day: u8) -> Self {
+	pub(crate) fn new(month: u32, day: u32) -> Self {
 		Self { month, day }
 	}
 
@@ -35,17 +36,15 @@ impl YearlessDate {
 	/// assert!(YearlessDate::new_opt(12, 32).is_none()); // December only has 31 days
 	/// ```
 	#[rustfmt::skip]
-	pub fn new_opt(month: u8, day: u8) -> Option<Self> {
-		if !(1..=12).contains(&month) {
+	pub fn new_opt(month: u32, day: u32) -> Option<Self> {
+		if !is_valid_month(&month) {
 			return None;
 		}
 
 		match month {
 			2 => if day > 29 { return None; },
 			4 | 6 | 9 | 11 => if day > 30 { return None; },
-			_ => if !(1..=31).contains(&day) {
-				return None;
-			},
+			_ => if day > 31 { return None; },
 		}
 
 		Some(Self::new(month, day))

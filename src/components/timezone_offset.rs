@@ -4,13 +4,13 @@ use crate::utils::collect_ascii_digits;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct TimeZoneOffset {
-	pub(crate) hours: i8,
-	pub(crate) minutes: i8,
+	pub(crate) hours: i32,
+	pub(crate) minutes: i32,
 }
 
 impl TimeZoneOffset {
 	#[inline]
-	pub(crate) fn new(hours: i8, minutes: i8) -> Self {
+	pub(crate) fn new(hours: i32, minutes: i32) -> Self {
 		Self { hours, minutes }
 	}
 
@@ -29,7 +29,7 @@ impl TimeZoneOffset {
 	/// assert!(TimeZoneOffset::new_opt(24, 0).is_none()); // Hours must be between [-23, 23]
 	/// assert!(TimeZoneOffset::new_opt(1, 60).is_none()); // Minutes must be between [0, 59]
 	/// ```
-	pub fn new_opt(hours: i8, minutes: i8) -> Option<Self> {
+	pub fn new_opt(hours: i32, minutes: i32) -> Option<Self> {
 		if !(-23..=23).contains(&hours) {
 			return None;
 		}
@@ -101,8 +101,8 @@ pub fn parse_timezone_offset(s: &str) -> Option<TimeZoneOffset> {
 pub fn parse_timezone_offset_component(s: &str, position: &mut usize) -> Option<TimeZoneOffset> {
 	let char_at = s.chars().nth(*position);
 
-	let mut minutes = 0i8;
-	let mut hours = 0i8;
+	let mut minutes = 0i32;
+	let mut hours = 0i32;
 
 	match char_at {
 		Some(TOKEN_Z) => {
@@ -115,7 +115,7 @@ pub fn parse_timezone_offset_component(s: &str, position: &mut usize) -> Option<
 			let collected = collect_ascii_digits(s, position);
 			let collected_len = collected.len();
 			if collected_len == 2 {
-				hours = collected.parse::<i8>().unwrap();
+				hours = collected.parse::<i32>().unwrap();
 				if *position > s.len()
 					|| s.chars().nth(*position) != Some(TOKEN_COLON)
 				{
@@ -129,11 +129,11 @@ pub fn parse_timezone_offset_component(s: &str, position: &mut usize) -> Option<
 					return None;
 				}
 
-				minutes = parsed_mins.parse::<i8>().unwrap();
+				minutes = parsed_mins.parse::<i32>().unwrap();
 			} else if collected_len == 4 {
 				let (hour_str, min_str) = collected.split_at(2);
-				hours = hour_str.parse::<i8>().unwrap();
-				minutes = min_str.parse::<i8>().unwrap();
+				hours = hour_str.parse::<i32>().unwrap();
+				minutes = min_str.parse::<i32>().unwrap();
 			} else {
 				return None;
 			}

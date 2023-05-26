@@ -54,7 +54,7 @@ pub fn parse_time_component(s: &str, position: &mut usize) -> Option<NaiveTime> 
 		return None;
 	}
 
-	let hour = parsed_hour.parse::<u8>().ok()?;
+	let hour = parsed_hour.parse::<u32>().ok()?;
 	if !is_valid_hour(&hour) {
 		return None;
 	}
@@ -69,7 +69,7 @@ pub fn parse_time_component(s: &str, position: &mut usize) -> Option<NaiveTime> 
 	if parsed_minute.len() != 2 {
 		return None;
 	}
-	let minute = parsed_minute.parse::<u8>().ok()?;
+	let minute = parsed_minute.parse::<u32>().ok()?;
 	if !is_valid_min_or_sec(&minute) {
 		return None;
 	}
@@ -98,12 +98,12 @@ pub fn parse_time_component(s: &str, position: &mut usize) -> Option<NaiveTime> 
 			parse_seconds_milliseconds(&parsed_second);
 		seconds = parsed_seconds;
 		milliseconds = parsed_milliseconds;
-		if !(0..60).contains(&parsed_seconds) {
+		if !is_valid_min_or_sec(&seconds) {
 			return None;
 		}
 	}
 
-	NaiveTime::from_hms_milli_opt(hour as u32, minute as u32, seconds, milliseconds)
+	NaiveTime::from_hms_milli_opt(hour, minute, seconds, milliseconds)
 }
 
 fn has_at_least_n_instances(s: &str, c: char, n: usize) -> bool {
@@ -122,7 +122,6 @@ fn has_at_least_n_instances(s: &str, c: char, n: usize) -> bool {
 fn parse_seconds_milliseconds(s: &str) -> (u32, u32) {
 	let parts: Vec<&str> = s.split(TOKEN_DOT).collect();
 	let seconds = parts.first().unwrap_or(&"0").parse().unwrap_or(0);
-
 	let milliseconds = parts.get(1).unwrap_or(&"0").parse().unwrap_or(0);
 
 	(seconds, milliseconds)
