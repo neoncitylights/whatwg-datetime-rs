@@ -2,6 +2,14 @@ use crate::parse_format;
 use crate::tokens::{TOKEN_COLON, TOKEN_MINUS, TOKEN_PLUS, TOKEN_Z};
 use crate::utils::collect_ascii_digits;
 
+/// A time-zone offset, with a signed number of hours and minutes.
+///
+/// # Examples
+/// ```
+/// use whatwg_datetime::{parse_timezone_offset, TimeZoneOffset};
+///
+/// assert_eq!(parse_timezone_offset("-07:00"), TimeZoneOffset::new_opt(-7, 0));
+/// ```
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct TimeZoneOffset {
 	pub(crate) hour: i32,

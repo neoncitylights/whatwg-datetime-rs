@@ -3,6 +3,16 @@ use crate::utils::is_valid_month;
 use crate::{collect_day_and_validate, collect_month_and_validate, parse_format};
 use whatwg_infra::collect_codepoints;
 
+/// A yearless date, consisting of a gregorian month and a day
+/// within the month, without an associated year.
+///
+/// # Examples
+///
+/// ```
+/// use whatwg_datetime::{parse_yearless_date, YearlessDate};
+///
+/// assert_eq!(parse_yearless_date("11-18"), YearlessDate::new_opt(11, 18));
+/// ```
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct YearlessDate {
 	pub(crate) month: u32,

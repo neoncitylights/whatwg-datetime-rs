@@ -2,6 +2,17 @@ use crate::tokens::TOKEN_HYPHEN;
 use crate::utils::{collect_ascii_digits, is_valid_month};
 use crate::{collect_month_and_validate, parse_format};
 
+/// A [proleptic-Gregorian date][proleptic-greg] consisting of a year and a month,
+/// with no time-zone or date information.
+///
+/// # Examples
+/// ```
+/// use whatwg_datetime::{parse_month, YearMonth};
+///
+/// assert_eq!(parse_month("2011-11"), YearMonth::new_opt(2011, 11));
+/// ```
+///
+/// [proleptic-greg]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#proleptic-gregorian-date
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct YearMonth {
 	pub(crate) year: i32,

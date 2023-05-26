@@ -1,6 +1,14 @@
 use crate::tokens::{TOKEN_ABBR_WEEK, TOKEN_HYPHEN};
 use crate::utils::{collect_ascii_digits, week_number_of_year};
 
+/// A week date consisting of a year and a week number.
+///
+/// # Examples
+/// ```
+/// use whatwg_datetime::{parse_week, YearWeek};
+///
+/// assert_eq!(parse_week("2011-W47"), YearWeek::new_opt(2011, 47));
+/// ```
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct YearWeek {
 	pub(crate) year: i32,
