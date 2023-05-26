@@ -49,6 +49,35 @@ impl YearlessDate {
 
 		Some(Self::new(month, day))
 	}
+
+	/// A month component. This is a number from 1 to 12, inclusive.
+	///
+	/// # Examples
+	/// ```
+	/// use whatwg_datetime::YearlessDate;
+	///
+	/// let yearless_date = YearlessDate::new_opt(11, 18).unwrap();
+	/// assert_eq!(yearless_date.month(), 11);
+	/// ```
+	#[inline]
+	pub const fn month(&self) -> u32 {
+		self.month
+	}
+
+	/// A day component. This is a number from 1 to the max number
+	/// of days in the month, inclusive.
+	///
+	/// # Examples
+	/// ```
+	/// use whatwg_datetime::YearlessDate;
+	///
+	/// let yearless_date = YearlessDate::new_opt(11, 18).unwrap();
+	/// assert_eq!(yearless_date.day(), 18);
+	/// ```
+	#[inline]
+	pub const fn day(&self) -> u32 {
+		self.day
+	}
 }
 
 /// Parses a string consisting of a gregorian month and a day
