@@ -4,12 +4,12 @@ use crate::utils::{collect_ascii_digits, week_number_of_year};
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct YearWeek {
 	pub(crate) year: i32,
-	pub(crate) week: u8,
+	pub(crate) week: u32,
 }
 
 impl YearWeek {
 	#[inline]
-	pub(crate) fn new(year: i32, week: u8) -> Self {
+	pub(crate) fn new(year: i32, week: u32) -> Self {
 		Self { year, week }
 	}
 
@@ -32,7 +32,7 @@ impl YearWeek {
 	/// assert!(YearWeek::new_opt(1952, 0).is_none()); // Week number must be at least 1
 	/// assert!(YearWeek::new_opt(0, 1).is_none()); // Year number must be greater than 0
 	/// ```
-	pub fn new_opt(year: i32, week: u8) -> Option<Self> {
+	pub fn new_opt(year: i32, week: u32) -> Option<Self> {
 		if year <= 0 {
 			return None;
 		}
@@ -92,7 +92,7 @@ pub fn parse_week(input: &str) -> Option<YearWeek> {
 		return None;
 	}
 
-	let week = parsed_week.parse::<u8>().unwrap();
+	let week = parsed_week.parse::<u32>().unwrap();
 	let max_weeks = week_number_of_year(year)?;
 	if week < 1 || week > max_weeks {
 		return None;

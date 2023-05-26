@@ -1,15 +1,15 @@
 use crate::tokens::TOKEN_HYPHEN;
-use crate::utils::collect_ascii_digits;
+use crate::utils::{collect_ascii_digits, is_valid_month};
 use crate::{collect_month_and_validate, parse_format};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct YearMonth {
-	pub(crate) year: u32,
-	pub(crate) month: u8,
+	pub(crate) year: i32,
+	pub(crate) month: u32,
 }
 
 impl YearMonth {
-	pub(crate) fn new(year: u32, month: u8) -> Self {
+	pub(crate) fn new(year: i32, month: u32) -> Self {
 		Self { year, month }
 	}
 
@@ -27,12 +27,12 @@ impl YearMonth {
 	/// assert!(YearMonth::new_opt(2011, 0).is_none()); // Month number must be at least 1
 	/// assert!(YearMonth::new_opt(0, 1).is_none()); // Year number must be greater than 0
 	/// ```
-	pub fn new_opt(year: u32, month: u8) -> Option<Self> {
+	pub fn new_opt(year: i32, month: u32) -> Option<Self> {
 		if year == 0 {
 			return None;
 		}
 
-		if !(1..=12).contains(&month) {
+		if !is_valid_month(&month) {
 			return None;
 		}
 
@@ -82,7 +82,7 @@ pub fn parse_month_component(s: &str, position: &mut usize) -> Option<YearMonth>
 		return None;
 	}
 
-	let year = parsed_year.parse::<u32>().ok()?;
+	let year = parsed_year.parse::<i32>().ok()?;
 	if year == 0 {
 		return None;
 	}
