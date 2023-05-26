@@ -9,7 +9,7 @@ pub struct YearWeek {
 
 impl YearWeek {
 	#[inline]
-	pub(crate) fn new(year: i32, week: u32) -> Self {
+	pub(crate) const fn new(year: i32, week: u32) -> Self {
 		Self { year, week }
 	}
 
@@ -42,6 +42,35 @@ impl YearWeek {
 		}
 
 		Some(Self::new(year, week))
+	}
+
+	/// A year component. This is a number greater than 0.
+	///
+	/// # Examples
+	/// ```
+	/// use whatwg_datetime::YearWeek;
+	///
+	/// let year_week = YearWeek::new_opt(2004, 53).unwrap();
+	/// assert_eq!(year_week.year(), 2004);
+	/// ```
+	#[inline]
+	pub const fn year(&self) -> i32 {
+		self.year
+	}
+
+	/// A week component. This is a number between 1 and the number of weeks
+	/// in the year, inclusive.
+	///
+	/// # Examples
+	/// ```
+	/// use whatwg_datetime::YearWeek;
+	///
+	/// let year_week = YearWeek::new_opt(2004, 53).unwrap();
+	/// assert_eq!(year_week.week(), 53);
+	/// ```
+	#[inline]
+	pub const fn week(&self) -> u32 {
+		self.week
 	}
 }
 

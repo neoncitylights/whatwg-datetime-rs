@@ -50,9 +50,8 @@ pub fn parse_global_datetime(s: &str) -> Option<DateTime<Utc>> {
 		return None;
 	}
 
-	let timezone_offset_as_duration = Duration::minutes(
-		timezone_offset.minutes as i64 + timezone_offset.hours as i64 * 60,
-	);
+	let timezone_offset_as_duration =
+		Duration::minutes(timezone_offset.minute as i64 + timezone_offset.hour as i64 * 60);
 	let naive_datetime = NaiveDateTime::new(
 		date,
 		time.overflowing_sub_signed(timezone_offset_as_duration).0,

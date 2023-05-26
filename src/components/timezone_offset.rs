@@ -4,14 +4,14 @@ use crate::utils::collect_ascii_digits;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct TimeZoneOffset {
-	pub(crate) hours: i32,
-	pub(crate) minutes: i32,
+	pub(crate) hour: i32,
+	pub(crate) minute: i32,
 }
 
 impl TimeZoneOffset {
 	#[inline]
-	pub(crate) fn new(hours: i32, minutes: i32) -> Self {
-		Self { hours, minutes }
+	pub(crate) fn new(hour: i32, minute: i32) -> Self {
+		Self { hour, minute }
 	}
 
 	/// Creates a new `TimeZoneOffset` from a signed number of hours and minutes.
@@ -39,6 +39,34 @@ impl TimeZoneOffset {
 		}
 
 		Some(Self::new(hours, minutes))
+	}
+
+	/// A minute component. This is a number from 0 to 59, inclusive.
+	///
+	/// # Examples
+	/// ```
+	/// use whatwg_datetime::TimeZoneOffset;
+	///
+	/// let tz_offset = TimeZoneOffset::new_opt(-7, 0).unwrap();
+	/// assert_eq!(tz_offset.minute(), 0);
+	/// ```
+	#[inline]
+	pub const fn minute(&self) -> i32 {
+		self.minute
+	}
+
+	/// A hour component. This is a number from -23 to 23, inclusive.
+	///
+	/// # Examples
+	/// ```
+	/// use whatwg_datetime::TimeZoneOffset;
+	///
+	/// let tz_offset = TimeZoneOffset::new_opt(-7, 0).unwrap();
+	/// assert_eq!(tz_offset.hour(), -7);
+	/// ```
+	#[inline]
+	pub const fn hour(&self) -> i32 {
+		self.hour
 	}
 }
 

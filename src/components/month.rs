@@ -9,7 +9,7 @@ pub struct YearMonth {
 }
 
 impl YearMonth {
-	pub(crate) fn new(year: i32, month: u32) -> Self {
+	pub(crate) const fn new(year: i32, month: u32) -> Self {
 		Self { year, month }
 	}
 
@@ -37,6 +37,34 @@ impl YearMonth {
 		}
 
 		Some(Self::new(year, month))
+	}
+
+	/// A year component. This is a number greater than 0.
+	///
+	/// # Examples
+	/// ```
+	/// use whatwg_datetime::YearMonth;
+	///
+	/// let year_month = YearMonth::new_opt(2011, 11).unwrap();
+	/// assert_eq!(year_month.year(), 2011);
+	/// ```
+	#[inline]
+	pub const fn year(&self) -> i32 {
+		self.year
+	}
+
+	/// A month component. This is a number from 1 to 12, inclusive.
+	///
+	/// # Examples
+	/// ```
+	/// use whatwg_datetime::YearMonth;
+	///
+	/// let year_month = YearMonth::new_opt(2011, 11).unwrap();
+	/// assert_eq!(year_month.month(), 11);
+	/// ```
+	#[inline]
+	pub const fn month(&self) -> u32 {
+		self.month
 	}
 }
 

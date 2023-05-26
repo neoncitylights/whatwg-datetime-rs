@@ -21,7 +21,7 @@ pub(crate) fn collect_ascii_digits(s: &str, position: &mut usize) -> String {
 	collect_codepoints(s, position, |c| c.is_ascii_digit())
 }
 
-pub fn max_days_in_month_year(month: u32, year: u32) -> Option<u32> {
+pub const fn max_days_in_month_year(month: u32, year: u32) -> Option<u32> {
 	match month {
 		1 | 3 | 5 | 7 | 8 | 10 | 12 => Some(31),
 		4 | 6 | 9 | 11 => Some(30),
