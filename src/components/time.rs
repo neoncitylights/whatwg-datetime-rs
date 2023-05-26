@@ -32,6 +32,22 @@ pub fn parse_time(s: &str) -> Option<NaiveTime> {
 	parse_format(s, parse_time_component)
 }
 
+/// Low-level function for parsing an individual time component
+///
+/// > **Note**:
+/// > This function exposes a lower-level API than [`parse_time`]. More than likely,
+/// > you will want to use [`parse_time`] instead.
+///
+/// # Examples
+/// ```
+/// use chrono::NaiveTime;
+/// use whatwg_datetime::parse_time_component;
+///
+/// let mut position = 0usize;
+/// let date = parse_time_component("14:59", &mut position);
+///
+/// assert_eq!(date, NaiveTime::from_hms_opt(14, 59, 0));
+/// ```
 pub fn parse_time_component(s: &str, position: &mut usize) -> Option<NaiveTime> {
 	let parsed_hour = collect_ascii_digits(s, position);
 	if parsed_hour.len() != 2 {

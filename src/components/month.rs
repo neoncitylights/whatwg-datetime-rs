@@ -61,6 +61,21 @@ pub fn parse_month(s: &str) -> Option<YearMonth> {
 	parse_format(s, parse_month_component)
 }
 
+/// Low-level function for parsing an individual month component
+///
+/// > **Note**:
+/// > This function exposes a lower-level API than [`parse_month`]. More than likely,
+/// > you will want to use [`parse_month`] instead.
+///
+/// # Examples
+/// ```
+/// use whatwg_datetime::{parse_month_component, YearMonth};
+///
+/// let mut position = 0usize;
+/// let date = parse_month_component("2011-11", &mut position);
+///
+/// assert_eq!(date, YearMonth::new_opt(2011, 11));
+/// ```
 pub fn parse_month_component(s: &str, position: &mut usize) -> Option<YearMonth> {
 	let parsed_year = collect_ascii_digits(s, position);
 	if parsed_year.len() < 4 {

@@ -76,6 +76,21 @@ pub fn parse_yearless_date(s: &str) -> Option<YearlessDate> {
 	parse_format(s, parse_yearless_date_component)
 }
 
+/// Low-level function for parsing an individual yearless date component
+///
+/// > **Note**:
+/// > This function exposes a lower-level API than [`parse_yearless_date`].
+/// > More than likely, you will want to use [`parse_yearless_date`] instead.
+///
+/// # Examples
+/// ```
+/// use whatwg_datetime::{parse_yearless_date_component, YearlessDate};
+///
+/// let mut position = 0usize;
+/// let date = parse_yearless_date_component("11-18", &mut position);
+///
+/// assert_eq!(date, YearlessDate::new_opt(11, 18));
+/// ```
 pub fn parse_yearless_date_component(s: &str, position: &mut usize) -> Option<YearlessDate> {
 	let collected = collect_codepoints(s, position, |c| c == TOKEN_HYPHEN);
 	if !matches!(collected.len(), 0 | 2) {

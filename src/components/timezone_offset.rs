@@ -83,6 +83,21 @@ pub fn parse_timezone_offset(s: &str) -> Option<TimeZoneOffset> {
 	parse_format(s, parse_timezone_offset_component)
 }
 
+/// Low-level function for parsing an individual timezone offset component
+///
+/// > **Note**:
+/// > This function exposes a lower-level API than [`parse_timezone_offset`].
+/// > More than likely, you will want to use [`parse_timezone_offset`] instead.
+///
+/// # Examples
+/// ```
+/// use whatwg_datetime::{parse_timezone_offset_component, TimeZoneOffset};
+///
+/// let mut position = 0usize;
+/// let date = parse_timezone_offset_component("-07:00", &mut position);
+///
+/// assert_eq!(date, TimeZoneOffset::new_opt(-7, 0));
+/// ```
 pub fn parse_timezone_offset_component(s: &str, position: &mut usize) -> Option<TimeZoneOffset> {
 	let char_at = s.chars().nth(*position);
 

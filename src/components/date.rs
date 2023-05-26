@@ -29,11 +29,21 @@ pub fn parse_date(s: &str) -> Option<NaiveDate> {
 }
 
 /// Low-level function for parsing an individual date component
-/// in the `YYYY-MM-DD` format
 ///
 /// > **Note**:
 /// > This function exposes a lower-level API than [`parse_date`]. More than likely,
 /// > you will want to use [`parse_date`] instead.
+///
+/// # Examples
+/// ```
+/// use chrono::NaiveDate;
+/// use whatwg_datetime::parse_date_component;
+///
+/// let mut position = 0usize;
+/// let date = parse_date_component("2011-11-18", &mut position);
+///
+/// assert_eq!(date, NaiveDate::from_ymd_opt(2011, 11, 18));
+/// ```
 pub fn parse_date_component(s: &str, position: &mut usize) -> Option<NaiveDate> {
 	let year_month = parse_month_component(s, position)?;
 	let year = year_month.year;
