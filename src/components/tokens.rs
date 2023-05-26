@@ -7,7 +7,6 @@ pub(crate) const TOKEN_HYPHEN: char = '-';
 pub(crate) const TOKEN_COLON: char = ':';
 pub(crate) const TOKEN_T: char = 'T';
 pub(crate) const TOKEN_Z: char = 'Z';
-pub(crate) const TOKEN_P: char = 'P';
 pub(crate) const TOKEN_PLUS: char = '+';
 pub(crate) const TOKEN_MINUS: char = '-';
 pub(crate) const TOKEN_DOT: char = '.';
