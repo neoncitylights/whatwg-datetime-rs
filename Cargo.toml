@@ -5,6 +5,9 @@ authors = [
 	"Samantha Nguyen, <sam.t.nguyenn@gmail.com>",
 ]
 description = "A Rust crate for parsing the datetime microsyntax, as defined by the WHATWG HTML Standard"
+homepage = "https://github.com/acmuta-research/whatwg-datetime-rs"
+repository = "https://github.com/acmuta-research/whatwg-datetime-rs"
+documentation = "https://docs.rs/whatwg-datetime"
 readme = "README.md"
 license = "MIT OR Apache-2.0"
 edition = "2021"
