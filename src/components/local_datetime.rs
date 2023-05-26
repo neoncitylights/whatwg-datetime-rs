@@ -2,6 +2,31 @@ use crate::tokens::{TOKEN_SPACE, TOKEN_T};
 use crate::{parse_date_component, parse_time_component};
 use chrono::NaiveDateTime;
 
+/// Parse a [proleptic-Gregorian date][proleptic-greg] consisting
+/// of a date, time, with no time-zone information
+///
+/// This follows the rules for [parsing a local datetime string][whatwg-html-parse]
+/// per [WHATWG HTML Standard § 2.3.5.5 Local dates and times][whatwg-html-local-datetime].
+///
+/// # Examples
+/// ```
+/// use chrono::{NaiveDate, NaiveDateTime, NaiveTime};
+/// use whatwg_datetime::parse_local_datetime;
+///
+/// // Parse a local datetime string with a date,
+/// // a T delimiter, anda  time with fractional seconds
+/// assert_eq!(
+///     parse_local_datetime("2011-11-18T14:54:39.929"),
+///     Some(NaiveDateTime::new(
+///         NaiveDate::from_ymd_opt(2011, 11, 18).unwrap(),
+///         NaiveTime::from_hms_milli_opt(14, 54, 39, 929).unwrap(),
+///     ))
+/// );
+/// ```
+///
+/// [proleptic-greg]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#proleptic-gregorian-date
+/// [whatwg-html-local-datetime]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#local-dates-and-times
+/// [whatwg-html-parse]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#parse-a-local-date-and-time-string
 pub fn parse_local_datetime(s: &str) -> Option<NaiveDateTime> {
 	let mut position = 0usize;
 	let date = parse_date_component(s, &mut position)?;

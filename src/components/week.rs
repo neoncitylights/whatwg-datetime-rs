@@ -12,8 +12,55 @@ impl YearWeek {
 	pub(crate) fn new(year: i32, week: u8) -> Self {
 		Self { year, week }
 	}
+
+	/// Creates a new `YearWeek` from a year and a week number.
+	///
+	/// This asserts that the year is greater than 0 and that the week number
+	/// is in the valid range for the year. Specifically, the week number
+	/// must be between 1 and the number of weeks in the year, inclusive.
+	///
+	/// The number of weeks in a year is described by the algorithm
+	/// in [WHATWG HTML Standard § 2.3.5.8 Weeks][whatwg-html-weeks].
+	///
+	/// # Examples
+	/// ```
+	/// use whatwg_datetime::YearWeek;
+	///
+	/// assert!(YearWeek::new_opt(2004, 53).is_some());
+	/// assert!(YearWeek::new_opt(2011, 47).is_some());
+	/// assert!(YearWeek::new_opt(2011, 53).is_none()); // 2011 only has 52 weeks
+	/// assert!(YearWeek::new_opt(1952, 0).is_none()); // Week number must be at least 1
+	/// assert!(YearWeek::new_opt(0, 1).is_none()); // Year number must be greater than 0
+	/// ```
+	pub fn new_opt(year: i32, week: u8) -> Option<Self> {
+		if year <= 0 {
+			return None;
+		}
+
+		if week < 1 || week > week_number_of_year(year)? {
+			return None;
+		}
+
+		Some(Self::new(year, week))
+	}
 }
 
+/// Parse a week-year number and a week-number
+///
+/// This follows the rules for [parsing a week string][whatwg-html-parse]
+/// per [WHATWG HTML Standard § 2.3.5.8 Weeks][whatwg-html-weeks].
+///
+/// # Examples
+/// ```
+/// use whatwg_datetime::{parse_week, YearWeek};
+///
+/// assert_eq!(parse_week("2004-W53"), YearWeek::new_opt(2004, 53));
+/// assert_eq!(parse_week("2011-W47"), YearWeek::new_opt(2011, 47));
+/// assert_eq!(parse_week("2011-W53"), None); // 2011 only has 52 weeks
+/// ```
+///
+/// [whatwg-html-weeks]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#weeks
+/// [whatwg-html-parse]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#parse-a-week-string
 pub fn parse_week(input: &str) -> Option<YearWeek> {
 	// Step 1, 2
 	let mut position = 0usize;

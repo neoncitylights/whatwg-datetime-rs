@@ -13,10 +13,37 @@ impl TimeZoneOffset {
 	pub(crate) fn new(hours: i8, minutes: i8) -> Self {
 		Self { hours, minutes }
 	}
+
+	/// Creates a new `TimeZoneOffset` from a signed number of hours and minutes.
+	///
+	/// This asserts that:
+	///  - hours are in between -23 and 23, inclusive,
+	///  - minutes are in between 0 and 59, inclusive
+	///
+	/// # Examples
+	/// ```
+	/// use whatwg_datetime::TimeZoneOffset;
+	///
+	/// assert!(TimeZoneOffset::new_opt(-7, 0).is_some());
+	/// assert!(TimeZoneOffset::new_opt(23, 59).is_some());
+	/// assert!(TimeZoneOffset::new_opt(24, 0).is_none()); // Hours must be between [-23, 23]
+	/// assert!(TimeZoneOffset::new_opt(1, 60).is_none()); // Minutes must be between [0, 59]
+	/// ```
+	pub fn new_opt(hours: i8, minutes: i8) -> Option<Self> {
+		if !(-23..=23).contains(&hours) {
+			return None;
+		}
+
+		if !(0..=59).contains(&minutes) {
+			return None;
+		}
+
+		Some(Self::new(hours, minutes))
+	}
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum TimeZoneSign {
+enum TimeZoneSign {
 	Positive,
 	Negative,
 }
@@ -32,11 +59,45 @@ impl TryFrom<char> for TimeZoneSign {
 	}
 }
 
+/// Parse a time-zone offset, with a signed number of hours and minutes
+///
+/// This follows the rules for [parsing a time-zone offset string][whatwg-html-parse]
+/// per [WHATWG HTML Standard § 2.3.5.6 Time zoness][whatwg-html-tzoffset].
+///
+/// # Examples
+/// ```
+/// use whatwg_datetime::{parse_timezone_offset, TimeZoneOffset};
+///
+/// // Parse a local datetime string with a date,
+/// // a T delimiter, anda  time with fractional seconds
+/// assert_eq!(
+///     parse_timezone_offset("-07:00"),
+///     TimeZoneOffset::new_opt(-7, 0)
+/// );
+/// ```
+///
+/// [whatwg-html-tzoffset]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#time-zones
+/// [whatwg-html-parse]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#parse-a-time-zone-offset-string
 #[inline]
 pub fn parse_timezone_offset(s: &str) -> Option<TimeZoneOffset> {
 	parse_format(s, parse_timezone_offset_component)
 }
 
+/// Low-level function for parsing an individual timezone offset component
+///
+/// > **Note**:
+/// > This function exposes a lower-level API than [`parse_timezone_offset`].
+/// > More than likely, you will want to use [`parse_timezone_offset`] instead.
+///
+/// # Examples
+/// ```
+/// use whatwg_datetime::{parse_timezone_offset_component, TimeZoneOffset};
+///
+/// let mut position = 0usize;
+/// let date = parse_timezone_offset_component("-07:00", &mut position);
+///
+/// assert_eq!(date, TimeZoneOffset::new_opt(-7, 0));
+/// ```
 pub fn parse_timezone_offset_component(s: &str, position: &mut usize) -> Option<TimeZoneOffset> {
 	let char_at = s.chars().nth(*position);
 

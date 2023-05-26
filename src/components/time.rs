@@ -4,11 +4,50 @@ use crate::utils::{collect_ascii_digits, is_valid_hour, is_valid_min_or_sec};
 use chrono::NaiveTime;
 use whatwg_infra::collect_codepoints;
 
+/// Parse a specific time containing an hour, minute, and optionally a second,
+/// and a fraction of a second
+///
+/// This follows the rules for [parsing a month string][whatwg-html-parse]
+/// per [WHATWG HTML Standard § 2.3.5.4 Times][whatwg-html-time].
+///
+/// # Examples
+/// ```
+/// use chrono::NaiveTime;
+/// use whatwg_datetime::parse_time;
+///
+/// // parse a local datetime with hours and minutes
+/// assert_eq!(parse_time("14:59"), NaiveTime::from_hms_opt(14, 59, 0));
+///
+/// // parse a local datetime with hours, minutes, and seconds
+/// assert_eq!(parse_time("14:59:39"), NaiveTime::from_hms_opt(14, 59, 39));
+///
+/// // parse a local datetime with hours, minutes, seconds, and milliseconds
+/// assert_eq!(parse_time("14:59:39.929"), NaiveTime::from_hms_milli_opt(14, 59, 39, 929));
+/// ```
+///
+/// [whatwg-html-time]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#times
+/// [whatwg-html-parse]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#parse-a-month-string
 #[inline]
 pub fn parse_time(s: &str) -> Option<NaiveTime> {
 	parse_format(s, parse_time_component)
 }
 
+/// Low-level function for parsing an individual time component
+///
+/// > **Note**:
+/// > This function exposes a lower-level API than [`parse_time`]. More than likely,
+/// > you will want to use [`parse_time`] instead.
+///
+/// # Examples
+/// ```
+/// use chrono::NaiveTime;
+/// use whatwg_datetime::parse_time_component;
+///
+/// let mut position = 0usize;
+/// let date = parse_time_component("14:59", &mut position);
+///
+/// assert_eq!(date, NaiveTime::from_hms_opt(14, 59, 0));
+/// ```
 pub fn parse_time_component(s: &str, position: &mut usize) -> Option<NaiveTime> {
 	let parsed_hour = collect_ascii_digits(s, position);
 	if parsed_hour.len() != 2 {
