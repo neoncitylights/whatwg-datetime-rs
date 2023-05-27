@@ -115,6 +115,10 @@ pub fn parse_yearless_date(s: &str) -> Option<YearlessDate> {
 }
 
 /// Low-level function for parsing an individual yearless date component
+/// at a given position
+///
+/// This follows the rules for [parsing a yearless date component][whatwg-html-parse]
+/// per [WHATWG HTML Standard § 2.3.5.3 Yearless dates][whatwg-html-yearless].
 ///
 /// > **Note**:
 /// > This function exposes a lower-level API than [`parse_yearless_date`].
@@ -129,6 +133,9 @@ pub fn parse_yearless_date(s: &str) -> Option<YearlessDate> {
 ///
 /// assert_eq!(date, YearlessDate::new_opt(11, 18));
 /// ```
+///
+/// [whatwg-html-yearless]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#yearless-dates
+/// [whatwg-html-parse]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#parse-a-yearless-date-component
 pub fn parse_yearless_date_component(s: &str, position: &mut usize) -> Option<YearlessDate> {
 	let collected = collect_codepoints(s, position, |c| c == TOKEN_HYPHEN);
 	if !matches!(collected.len(), 0 | 2) {

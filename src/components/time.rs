@@ -7,7 +7,7 @@ use whatwg_infra::collect_codepoints;
 /// Parse a specific time containing an hour, minute, and optionally a second,
 /// and a fraction of a second
 ///
-/// This follows the rules for [parsing a month string][whatwg-html-parse]
+/// This follows the rules for [parsing a time string][whatwg-html-parse]
 /// per [WHATWG HTML Standard § 2.3.5.4 Times][whatwg-html-time].
 ///
 /// # Examples
@@ -26,13 +26,16 @@ use whatwg_infra::collect_codepoints;
 /// ```
 ///
 /// [whatwg-html-time]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#times
-/// [whatwg-html-parse]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#parse-a-month-string
+/// [whatwg-html-parse]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#parse-a-time-string
 #[inline]
 pub fn parse_time(s: &str) -> Option<NaiveTime> {
 	parse_format(s, parse_time_component)
 }
 
-/// Low-level function for parsing an individual time component
+/// Low-level function for parsing an individual time component at a given position
+///
+/// This follows the rules for [parsing a time component][whatwg-html-parse]
+/// per [WHATWG HTML Standard § 2.3.5.4 Times][whatwg-html-time].
 ///
 /// > **Note**:
 /// > This function exposes a lower-level API than [`parse_time`]. More than likely,
@@ -48,6 +51,9 @@ pub fn parse_time(s: &str) -> Option<NaiveTime> {
 ///
 /// assert_eq!(date, NaiveTime::from_hms_opt(14, 59, 0));
 /// ```
+///
+/// [whatwg-html-time]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#times
+/// [whatwg-html-parse]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#parse-a-time-component
 pub fn parse_time_component(s: &str, position: &mut usize) -> Option<NaiveTime> {
 	let parsed_hour = collect_ascii_digits(s, position);
 	if parsed_hour.len() != 2 {

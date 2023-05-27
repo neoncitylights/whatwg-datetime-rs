@@ -28,7 +28,10 @@ pub fn parse_date(s: &str) -> Option<NaiveDate> {
 	parse_format(s, parse_date_component)
 }
 
-/// Low-level function for parsing an individual date component
+/// Low-level function for parsing an individual date component at a given position
+///
+/// This follows the rules for [parsing a date component][whatwg-html-parse],
+/// per [WHATWG HTML Standard § 2.3.5.2 Dates][whatwg-html-dates].
 ///
 /// > **Note**:
 /// > This function exposes a lower-level API than [`parse_date`]. More than likely,
@@ -44,6 +47,9 @@ pub fn parse_date(s: &str) -> Option<NaiveDate> {
 ///
 /// assert_eq!(date, NaiveDate::from_ymd_opt(2011, 11, 18));
 /// ```
+///
+/// [whatwg-html-dates]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#dates
+/// [whatwg-html-parse]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#parse-a-date-component
 pub fn parse_date_component(s: &str, position: &mut usize) -> Option<NaiveDate> {
 	let year_month = parse_month_component(s, position)?;
 	let year = year_month.year;
