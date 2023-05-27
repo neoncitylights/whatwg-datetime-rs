@@ -100,7 +100,10 @@ pub fn parse_month(s: &str) -> Option<YearMonth> {
 	parse_format(s, parse_month_component)
 }
 
-/// Low-level function for parsing an individual month component
+/// Low-level function for parsing an individual month component at a given position
+///
+/// This follows the rules for [parsing a month component][whatwg-html-parse]
+/// per [WHATWG HTML Standard § 2.3.5.1 Months][whatwg-html-months].
 ///
 /// > **Note**:
 /// > This function exposes a lower-level API than [`parse_month`]. More than likely,
@@ -115,6 +118,9 @@ pub fn parse_month(s: &str) -> Option<YearMonth> {
 ///
 /// assert_eq!(date, YearMonth::new_opt(2011, 11));
 /// ```
+///
+/// [whatwg-html-months]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#months
+/// [whatwg-html-parse]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#parse-a-month-component
 pub fn parse_month_component(s: &str, position: &mut usize) -> Option<YearMonth> {
 	let parsed_year = collect_ascii_digits(s, position);
 	if parsed_year.len() < 4 {

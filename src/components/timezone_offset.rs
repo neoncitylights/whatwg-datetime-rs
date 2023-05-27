@@ -98,7 +98,7 @@ impl TryFrom<char> for TimeZoneSign {
 /// Parse a time-zone offset, with a signed number of hours and minutes
 ///
 /// This follows the rules for [parsing a time-zone offset string][whatwg-html-parse]
-/// per [WHATWG HTML Standard § 2.3.5.6 Time zoness][whatwg-html-tzoffset].
+/// per [WHATWG HTML Standard § 2.3.5.6 Time zones][whatwg-html-tzoffset].
 ///
 /// # Examples
 /// ```
@@ -120,6 +120,10 @@ pub fn parse_timezone_offset(s: &str) -> Option<TimeZoneOffset> {
 }
 
 /// Low-level function for parsing an individual timezone offset component
+/// at a given position
+///
+/// This follows the rules for [parsing a time-zone offset component][whatwg-html-parse]
+/// per [WHATWG HTML Standard § 2.3.5.6 Time zones][whatwg-html-tzoffset].
 ///
 /// > **Note**:
 /// > This function exposes a lower-level API than [`parse_timezone_offset`].
@@ -134,6 +138,9 @@ pub fn parse_timezone_offset(s: &str) -> Option<TimeZoneOffset> {
 ///
 /// assert_eq!(date, TimeZoneOffset::new_opt(-7, 0));
 /// ```
+///
+/// [whatwg-html-tzoffset]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#time-zones
+/// [whatwg-html-parse]: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#parse-a-time-zone-offset-component
 pub fn parse_timezone_offset_component(s: &str, position: &mut usize) -> Option<TimeZoneOffset> {
 	let char_at = s.chars().nth(*position);
 
